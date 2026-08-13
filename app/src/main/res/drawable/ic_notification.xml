@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Simple notification icon - solid background with A letter -->
+    <path
+        android:fillColor="#FF6B6B"
+        android:pathData="M24,24 L84,24 Q92,24 92,32 L92,76 Q92,84 84,84 L24,84 Q16,84 16,76 L16,32 Q16,24 24,24Z"/>
+    
+    <!-- White A letter -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M38,38 L70,38 L74,48 L34,48 Z"/>
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M36,52 L72,52 L62,78 L46,78 Z"/>
+    
+</vector>

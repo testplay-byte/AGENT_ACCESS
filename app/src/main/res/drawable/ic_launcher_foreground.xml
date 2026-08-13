@@ -5,33 +5,16 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
     
-    <!-- Main container - White rounded rectangle -->
+    <!-- Minimalistic White "A" Logo for AniTrack -->
+    
+    <!-- Main A shape - clean and bold -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M24,24 L84,24 Q92,24 92,32 L92,76 Q92,84 84,84 L24,84 Q16,84 16,76 L16,32 Q16,24 24,24Z"/>
+        android:pathData="M30,72 L42,36 L66,36 L78,72 L66,72 L62,60 L46,60 L42,72 Z"/>
     
-    <!-- Stylized "A" for AniTrack / Anime -->
+    <!-- Crossbar of A -->
     <path
-        android:fillColor="#1890FF"
-        android:pathData="M38,36 L70,36 L74,44 L34,44 Z"/>
-    
-    <path
-        android:fillColor="#1890FF"
-        android:pathData="M36,48 L72,48 L62,76 L46,76 Z"/>
-    
-    <!-- Aqua accent line -->
-    <path
-        android:fillColor="#13C2C2"
-        android:pathData="M42,56 L66,56 L64,62 L44,62 Z"/>
-    
-    <!-- Star sparkle - top right -->
-    <path
-        android:fillColor="#FFA940"
-        android:pathData="M78,34 L80,38 L84,38 L81,41 L82,45 L78,42 L74,45 L75,41 L72,38 L76,38 Z"/>
-    
-    <!-- Small sparkle - bottom left -->
-    <path
-        android:fillColor="#52C41A"
-        android:pathData="M30,72 L31.5,74 L34,74 L32,75.5 L32.5,78 L30,76.5 L27.5,78 L28,75.5 L26,74 L28.5,74 Z"/>
+        android:fillColor="#FF6B6B"
+        android:pathData="M48,52 L60,52 L58,58 L50,58 Z"/>
     
 </vector>
