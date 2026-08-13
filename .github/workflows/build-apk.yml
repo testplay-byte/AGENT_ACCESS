@@ -1,0 +1,110 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  JAVA_VERSION: '17'
+  JAVA_DISTRIBUTION: 'temurin'
+
+jobs:
+  build:
+    name: Build Debug APK
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          retention-days: 30
+
+      - name: Get APK info
+        id: apk-info
+        run: |
+          APK_PATH=$(find app/build/outputs/apk/debug -name "*.apk" -type f | head -1)
+          echo "APK_PATH=$APK_PATH" >> $GITHUB_OUTPUT
+          if [ -f "$APK_PATH" ]; then
+            APK_SIZE=$(du -h "$APK_PATH" | cut -f1)
+            echo "APK_SIZE=$APK_SIZE" >> $GITHUB_OUTPUT
+            echo "## 📱 Build Summary" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+            echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+            echo "| **Status** | ✅ Success |" >> $GITHUB_STEP_SUMMARY
+            echo "| **APK Size** | $APK_SIZE |" >> $GITHUB_STEP_SUMMARY
+            echo "| **Branch** | ${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
+            echo "| **Commit** | ${{ github.sha }} |" >> $GITHUB_STEP_SUMMARY
+            echo "| **Build Time** | $(date -u) UTC |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  release:
+    name: Create Release (main only)
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: debug-apk
+          path: release/
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.run_number }}
+          name: "AniTrack Debug Build #${{ github.run_number }}"
+          body: |
+            ## AniTrack - Anime Tracker App
+            
+            ### Debug APK Build
+            
+            This is an automated debug build from the main branch.
+            
+            #### Features:
+            - 🔍 Search anime using AniList API
+            - ⭐ Track your favorite anime
+            - 📊 View trending and popular anime
+            - 🎨 Beautiful Material Design 3 UI
+            - 📡 Remote control system for testing
+            
+            #### Installation:
+            1. Download the APK file below
+            2. Enable "Install from unknown sources" on your device
+            3. Install the APK
+            
+            ---
+            *Built automatically by GitHub Actions*
+          files: release/**/*.apk
+          draft: false
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
