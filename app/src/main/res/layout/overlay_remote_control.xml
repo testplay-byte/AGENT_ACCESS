@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <!-- Main FAB Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_main"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:src="@drawable/ic_remote_control"
-        android:contentDescription="Remote Control"
-        android:tint="@android:color/white"
-        app:backgroundTint="@color/purple_600"
-        app:elevation="8dp" />
+        android:contentDescription="Remote Control" />
 
     <!-- Expanded Panel -->
     <LinearLayout
@@ -48,7 +44,6 @@
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
                 android:text="Disconnected"
-                android:textColor="@color/remote_control_disconnected"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -64,9 +59,9 @@
                 android:id="@+id/btn_screenshot"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_screenshot"
-                android:contentDescription="Screenshot" />
+                android:contentDescription="Screenshot"
+                android:background="?android:attr/selectableItemBackgroundBorderless" />
 
             <!-- Close Button -->
             <ImageButton
@@ -74,9 +69,9 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@android:drawable/ic_menu_close_clear_cancel"
-                android:contentDescription="Close" />
+                android:contentDescription="Close"
+                android:background="?android:attr/selectableItemBackgroundBorderless" />
         </LinearLayout>
     </LinearLayout>
 
