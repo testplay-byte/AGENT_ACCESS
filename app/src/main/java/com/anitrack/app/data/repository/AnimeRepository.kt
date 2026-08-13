@@ -23,6 +23,8 @@ import java.util.concurrent.TimeUnit
 
 val Context.favoritesDataStore: DataStore<Preferences> by preferencesDataStore(name = "favorites")
 
+val Context.remoteControlDataStore: DataStore<Preferences> by preferencesDataStore(name = "remote_control")
+
 class AnimeRepository private constructor(
     private val api: AniListApi,
     private val context: Context
@@ -233,8 +235,10 @@ class AnimeRepository private constructor(
 }
 
 class RemoteControlPreferences(
-    private val dataStore: DataStore<Preferences>
+    context: Context
 ) {
+    private val dataStore = context.remoteControlDataStore
+    
     companion object {
         val REMOTE_CONTROL_ENABLED = booleanPreferencesKey("remote_control_enabled")
     }

@@ -20,14 +20,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.anitrack.app.ui.favorites.FavoritesViewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -42,10 +42,7 @@ import com.anitrack.app.ui.theme.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
-    viewModel: FavoritesViewModel = remember { 
-        val context = LocalContext.current.applicationContext
-        FavoritesViewModel.create(context)
-    },
+    viewModel: FavoritesViewModel = viewModel(factory = FavoritesViewModel.Factory),
     onAnimeClick: (Int) -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsState().value
@@ -135,7 +132,7 @@ private fun FavoritesList(
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp, bottom = 80.dp),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 80.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(favorites, key = { it.id }) { anime ->

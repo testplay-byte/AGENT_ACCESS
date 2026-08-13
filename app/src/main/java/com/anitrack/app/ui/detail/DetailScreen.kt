@@ -19,14 +19,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.anitrack.app.ui.detail.DetailViewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -43,10 +43,7 @@ import com.anitrack.app.ui.theme.*
 fun DetailScreen(
     animeId: Int,
     onBackClick: () -> Unit,
-    viewModel: DetailViewModel = remember { 
-        val context = LocalContext.current.applicationContext
-        DetailViewModel.create(context)
-    }
+    viewModel: DetailViewModel = viewModel(factory = DetailViewModel.Factory)
 ) {
     val uiState = viewModel.uiState.collectAsState().value
     
@@ -244,9 +241,9 @@ private fun DetailContent(
             // Genres Section
             if (!anime.genres.isNullOrEmpty()) {
                 InfoSection(title = R.string.detail_genres) {
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    Row(
+                        modifier = Modifier.horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         anime.genres!!.forEach { genre ->
                             Surface(

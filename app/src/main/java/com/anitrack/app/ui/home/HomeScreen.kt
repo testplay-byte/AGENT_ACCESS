@@ -18,7 +18,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.anitrack.app.ui.home.HomeViewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,7 +27,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,10 +42,7 @@ import com.anitrack.app.ui.theme.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = remember { 
-        val context = LocalContext.current.applicationContext
-        HomeViewModel.create(context)
-    },
+    viewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
     onAnimeClick: (Int) -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsState().value
@@ -252,7 +249,7 @@ private fun TrendingCard(
         modifier = Modifier
             .width(160.dp)
             .scale(scale)
-            .clickable(onClick = onClick),
+            .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {

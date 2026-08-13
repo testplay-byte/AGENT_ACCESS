@@ -1,6 +1,9 @@
 package com.anitrack.app.ui.profile
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.lifecycle.viewModelScope
 import com.anitrack.app.data.repository.AnimeRepository
 import com.anitrack.app.data.repository.RemoteControlPreferences
@@ -24,10 +27,15 @@ class ProfileViewModel(
     companion object {
         fun create(context: Context): ProfileViewModel {
             return ProfileViewModel(
-                remoteControlPreferences = RemoteControlPreferences(
-                    dataStore = context.dataStore
-                )
+                remoteControlPreferences = RemoteControlPreferences(context)
             )
+        }
+        
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as android.app.Application
+                ProfileViewModel(RemoteControlPreferences(application))
+            }
         }
     }
 

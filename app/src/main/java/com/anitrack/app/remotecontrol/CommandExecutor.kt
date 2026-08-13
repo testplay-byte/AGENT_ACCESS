@@ -326,10 +326,11 @@ class CommandExecutor(
         val className = node.className?.toString() ?: ""
         val text = node.text?.toString() ?: ""
         val contentDesc = node.contentDescription?.toString() ?: ""
-        val bounds = node.boundsInScreen
+        val rect = Rect()
+        node.getBoundsInScreen(rect)
         
         val xml = StringBuilder()
-        xml.appendLine("$indent<node class=\"$className\" text=\"$text\" desc=\"$contentDesc\" bounds=\"${bounds.left},${bounds.top},${bounds.right},${bounds.bottom}\">")
+        xml.appendLine("$indent<node class=\"$className\" text=\"$text\" desc=\"$contentDesc\" bounds=\"${rect.left},${rect.top},${rect.right},${rect.bottom}\">")
         
         for (i in 0 until node.childCount) {
             xml.append(buildXmlFromNode(node.getChild(i), depth + 1))

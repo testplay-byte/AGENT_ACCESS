@@ -1,6 +1,9 @@
 package com.anitrack.app.ui.home
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.lifecycle.viewModelScope
 import com.anitrack.app.data.api.models.AnimeModel
 import com.anitrack.app.data.repository.AnimeRepository
@@ -26,6 +29,13 @@ class HomeViewModel(
             return HomeViewModel(
                 repository = AnimeRepository.getInstance(context)
             )
+        }
+        
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as android.app.Application
+                HomeViewModel(AnimeRepository.getInstance(application))
+            }
         }
     }
 
