@@ -606,16 +606,29 @@ private fun startDownload(
         }
     }
     
-    // Poll for progress updates
+    // Poll for progress updates with timeout
     coroutineScope.launch {
-        while (true) {
+        var pollCount = 0
+        val maxPolls = 240 // 2 minutes max at 500ms intervals
+        
+        while (pollCount < maxPolls) {
             delay(500) // Poll every 500ms
+            pollCount++
+            
             val state = updater.getDownloadProgress()
             if (state is DownloadState.Completed || state is DownloadState.Failed) {
                 break
             }
             if (state is DownloadState.Progress) {
                 onStateChanged(state)
+            }
+        }
+        
+        // Timeout handling - if we've polled too many times without completion
+        if (pollCount >= maxPolls) {
+            val finalState = updater.getDownloadProgress()
+            if (finalState !is DownloadState.Completed && finalState !is DownloadState.Failed) {
+                onStateChanged(DownloadState.Failed("Download timed out"))
             }
         }
     }

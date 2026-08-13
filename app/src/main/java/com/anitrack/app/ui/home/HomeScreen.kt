@@ -45,32 +45,28 @@ import com.anitrack.app.ui.theme.*
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
-    onAnimeClick: (Int) -> Unit
+    onAnimeClick: (Int) -> Unit,
+    onNavigate: (String) -> Unit = {}
 ) {
     val uiState = viewModel.uiState.collectAsState().value
     
-    Scaffold(
-        bottomBar = {
-            AniTrackBottomNavigation(
-                currentRoute = "home",
-                onNavigate = { }
+    // Content without Scaffold - handled by AniTrackNavHost
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BackgroundLight)
+    ) {
+        when {
+            uiState.isLoading -> LoadingScreen()
+            uiState.error != null -> ErrorScreen(
+                message = uiState.error ?: "Unknown error",
+                onRetry = { viewModel.refresh() }
             )
-        },
-        containerColor = BackgroundLight
-    ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues)) {
-            when {
-                uiState.isLoading -> LoadingScreen()
-                uiState.error != null -> ErrorScreen(
-                    message = uiState.error!!,
-                    onRetry = { viewModel.refresh() }
-                )
-                else -> HomeContent(
-                    trendingAnime = uiState.trendingAnime,
-                    popularThisSeason = uiState.popularThisSeason,
-                    onAnimeClick = onAnimeClick
-                )
-            }
+            else -> HomeContent(
+                trendingAnime = uiState.trendingAnime,
+                popularThisSeason = uiState.popularThisSeason,
+                onAnimeClick = onAnimeClick
+            )
         }
     }
 }

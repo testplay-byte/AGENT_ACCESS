@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -33,43 +34,35 @@ import com.anitrack.app.ui.theme.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel = viewModel(factory = ProfileViewModel.Factory)
+    viewModel: ProfileViewModel = viewModel(factory = ProfileViewModel.Factory),
+    onNavigate: (String) -> Unit = {}
 ) {
     val uiState = viewModel.uiState.collectAsState().value
     
-    Scaffold(
-        bottomBar = {
-            AniTrackBottomNavigation(
-                currentRoute = "profile",
-                onNavigate = { }
-            )
-        },
-        containerColor = BackgroundLight
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .verticalScroll(rememberScrollState())
-        ) {
-            // Profile Header
-            ProfileHeader()
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            // Settings Section
-            SettingsSection(
-                uiState = uiState,
-                viewModel = viewModel
-            )
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            // About Section
-            AboutSection(appVersion = uiState.appVersion)
-            
-            Spacer(modifier = Modifier.height(32.dp))
-        }
+    // Content without Scaffold - handled by AniTrackNavHost
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BackgroundLight)
+            .verticalScroll(rememberScrollState())
+    ) {
+        // Profile Header
+        ProfileHeader()
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        // Settings Section
+        SettingsSection(
+            uiState = uiState,
+            viewModel = viewModel
+        )
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        // About Section
+        AboutSection(appVersion = uiState.appVersion)
+        
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 
@@ -235,7 +228,7 @@ private fun SettingsSection(
             Column {
                 // Remote Control Toggle
                 SettingsToggleItem(
-                    icon = Icons.Default.SettingsRemote,
+                    icon = Icons.Default.Settings,
                     iconColor = SkyBlue500,
                     title = stringResource(R.string.profile_remote_control),
                     description = stringResource(R.string.profile_remote_control_description),
@@ -246,7 +239,7 @@ private fun SettingsSection(
                 
                 // Dark Mode Toggle
                 SettingsToggleItem(
-                    icon = Icons.Default.DarkMode,
+                    icon = Icons.Outlined.DarkMode,
                     iconColor = Aqua500,
                     title = stringResource(R.string.profile_dark_mode),
                     description = "Enable dark theme",
@@ -332,7 +325,7 @@ private fun AboutSection(appVersion: String) {
                 )
                 
                 SettingsClickableItem(
-                    icon = Icons.Default.PrivacyTip,
+                    icon = Icons.Default.Lock,
                     iconColor = SkyBlue600,
                     title = stringResource(R.string.profile_privacy_policy),
                     trailingText = "",
@@ -341,7 +334,7 @@ private fun AboutSection(appVersion: String) {
                 )
                 
                 SettingsClickableItem(
-                    icon = Icons.Default.Description,
+                    icon = Icons.Default.Article,
                     iconColor = Aqua600,
                     title = stringResource(R.string.profile_terms_of_service),
                     trailingText = "",

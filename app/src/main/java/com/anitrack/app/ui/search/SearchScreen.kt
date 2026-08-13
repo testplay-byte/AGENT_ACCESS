@@ -49,51 +49,43 @@ import com.anitrack.app.ui.theme.*
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel = viewModel(factory = SearchViewModel.Factory),
-    onAnimeClick: (Int) -> Unit
+    onAnimeClick: (Int) -> Unit,
+    onNavigate: (String) -> Unit = {}
 ) {
     val uiState = viewModel.uiState.collectAsState().value
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     
-    Scaffold(
-        bottomBar = {
-            AniTrackBottomNavigation(
-                currentRoute = "search",
-                onNavigate = { }
-            )
-        },
-        containerColor = BackgroundLight
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            // Search Bar
-            SearchBar(
-                query = uiState.searchQuery,
-                onQueryChange = { viewModel.onSearchQueryChanged(it) },
-                onClear = { viewModel.clearSearch() },
-                focusRequester = focusRequester,
-                focusManager = focusManager
-            )
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            // Content
-            when {
-                uiState.isSearching -> LoadingState()
-                uiState.hasSearched && uiState.searchResults.isEmpty() && !uiState.isSearching -> {
-                    NoResultsState()
-                }
-                uiState.hasSearched && uiState.searchResults.isNotEmpty() -> {
-                    SearchResultsList(
-                        results = uiState.searchResults,
-                        onAnimeClick = onAnimeClick
-                    )
-                }
-                else -> InitialState()
+    // Content without Scaffold - handled by AniTrackNavHost
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BackgroundLight)
+    ) {
+        // Search Bar
+        SearchBar(
+            query = uiState.searchQuery,
+            onQueryChange = { viewModel.onSearchQueryChanged(it) },
+            onClear = { viewModel.clearSearch() },
+            focusRequester = focusRequester,
+            focusManager = focusManager
+        )
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        // Content
+        when {
+            uiState.isSearching -> LoadingState()
+            uiState.hasSearched && uiState.searchResults.isEmpty() && !uiState.isSearching -> {
+                NoResultsState()
             }
+            uiState.hasSearched && uiState.searchResults.isNotEmpty() -> {
+                SearchResultsList(
+                    results = uiState.searchResults,
+                    onAnimeClick = onAnimeClick
+                )
+            }
+            else -> InitialState()
         }
     }
 }

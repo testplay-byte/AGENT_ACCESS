@@ -335,6 +335,13 @@ class AppUpdater(private val context: Context) {
     fun installApk(filePath: String): Boolean {
         return try {
             val fileUri = Uri.parse(filePath)
+            val path = fileUri?.path
+            
+            if (path.isNullOrEmpty()) {
+                Log.w(TAG, "Invalid APK file path")
+                return false
+            }
+            
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 setDataAndType(fileUri, "application/vnd.android.package-archive")
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or 
@@ -342,7 +349,7 @@ class AppUpdater(private val context: Context) {
                 
                 // For Android 7+, we need FileProvider
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    val apkFile = java.io.File(fileUri.path!!)
+                    val apkFile = java.io.File(path)
                     val authority = UpdaterConfig.FILE_PROVIDER_AUTHORITY_TEMPLATE.format(context.packageName)
                     val contentUri = FileProvider.getUriForFile(
                         context,

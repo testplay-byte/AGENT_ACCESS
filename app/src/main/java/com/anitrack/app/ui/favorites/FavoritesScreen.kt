@@ -43,29 +43,25 @@ import com.anitrack.app.ui.theme.*
 @Composable
 fun FavoritesScreen(
     viewModel: FavoritesViewModel = viewModel(factory = FavoritesViewModel.Factory),
-    onAnimeClick: (Int) -> Unit
+    onAnimeClick: (Int) -> Unit,
+    onNavigate: (String) -> Unit = {}
 ) {
     val uiState = viewModel.uiState.collectAsState().value
     
-    Scaffold(
-        bottomBar = {
-            AniTrackBottomNavigation(
-                currentRoute = "favorites",
-                onNavigate = { }
+    // Content without Scaffold - handled by AniTrackNavHost
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BackgroundLight)
+    ) {
+        when {
+            uiState.isLoading -> LoadingContent()
+            uiState.isEmpty -> EmptyFavorites()
+            else -> FavoritesList(
+                favorites = uiState.favorites,
+                onAnimeClick = onAnimeClick,
+                onRemoveFavorite = { animeId -> viewModel.removeFromFavorites(animeId) }
             )
-        },
-        containerColor = BackgroundLight
-    ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues)) {
-            when {
-                uiState.isLoading -> LoadingContent()
-                uiState.isEmpty -> EmptyFavorites()
-                else -> FavoritesList(
-                    favorites = uiState.favorites,
-                    onAnimeClick = onAnimeClick,
-                    onRemoveFavorite = { animeId -> viewModel.removeFromFavorites(animeId) }
-                )
-            }
         }
     }
 }
