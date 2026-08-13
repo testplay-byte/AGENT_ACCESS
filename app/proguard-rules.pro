@@ -18,7 +18,6 @@
 -keepclassmembers,allowshrinking,allowobfuscation class * {
     @com.squareup.moshi.JsonClass <fields>;
 }
-
 -keep @com.squareup.moshi.JsonQualifier interface *
 
 # Kotlin
@@ -32,6 +31,20 @@
 # Compose
 -keep,allowobfuscation,allowshrinking class androidx.compose.** {
     *;
+}
+
+# kotlinx.serialization - CRITICAL for WebSocket messages
+-keepattributes RuntimeVisibleAnnotations
+-keepattributes RuntimeInvisibleAnnotations
+-keepclassmembers class kotlinx.serialization.json.** { *; }
+-keep class kotlinx.serialization.** { *; }
+-dontwarn kotlinx.serialization.**
+-keep @kotlinx.serialization.Serializable class *
+-keepclassmembers @kotlinx.serialization.Serializable class * {
+    *** Companion;
+}
+-keepclasseswithmembers @kotlinx.serialization.Serializable class * {
+    *** Companion;
 }
 
 # Room
@@ -55,7 +68,9 @@
 -keep class com.anitrack.app.data.api.models.** { *; }
 -keep class com.anitrack.app.remotecontrol.models.** { *; }
 
-# Keep serialization
+# Keep essential annotation attributes for serialization
 -keepattributes *Annotation*
--keepattributes RuntimeVisibleAnnotations
--keepattributes RuntimeInvisibleAnnotations
+-keepattributes Signature
+-keepattributes Exceptions
+-keepattributes InnerClasses
+-keepattributes EnclosingMethod

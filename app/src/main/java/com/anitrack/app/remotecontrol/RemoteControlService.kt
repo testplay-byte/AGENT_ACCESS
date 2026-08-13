@@ -51,6 +51,7 @@ class RemoteControlService : Service() {
         const val ACTION_CONNECT = "com.anitrack.app.remotecontrol.CONNECT"
         const val ACTION_DISCONNECT = "com.anitrack.app.remotecontrol.DISCONNECT"
         
+        @Volatile
         var isRunning: Boolean = false
             private set
         

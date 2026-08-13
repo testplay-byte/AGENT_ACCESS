@@ -12,12 +12,22 @@ android {
         applicationId = "com.anitrack.app"
         minSdk = 26
         targetSdk = 34
-        versionCode = 3
-        versionName = "1.2.0"
+        versionCode = 4
+        versionName = "1.3.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+    }
+
+    // Signing configuration for consistent updates
+    signingConfigs {
+        create("release") {
+            storeFile = file("../app/anitrack-release-key.jks")
+            storePassword = "AniTrack2024!Secure"
+            keyAlias = "anitrack-key"
+            keyPassword = "AniTrack2024!Secure"
         }
     }
 
@@ -29,10 +39,13 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
         debug {
             isDebuggable = true
-            applicationIdSuffix = ".debug"
+            // Remove applicationIdSuffix to allow testing release-like behavior
+            // applicationIdSuffix = ".debug"
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     

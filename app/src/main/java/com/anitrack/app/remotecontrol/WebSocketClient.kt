@@ -4,6 +4,7 @@ import android.util.Log
 import com.anitrack.app.remotecontrol.models.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -68,7 +69,7 @@ class WebSocketClient() {
         encodeDefaults = true
     }
     
-    private val scope = CoroutineScope(Dispatchers.IO)
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     
     private val webSocketListener = object : WebSocketListener() {
         
