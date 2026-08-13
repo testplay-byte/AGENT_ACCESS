@@ -40,7 +40,7 @@ class ScreenshotCapture(
     companion object {
         const val SCREENSHOT_REQUEST_CODE = 1001
         const val DEFAULT_QUALITY = 80
-        const val DEFAULT_FORMAT = Bitmap.CompressFormat.JPEG
+        val DEFAULT_FORMAT: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG
     }
 
     init {
@@ -170,7 +170,7 @@ class ScreenshotCapture(
                 Bitmap.Config.ARGB_8888
             )
             
-            bitmap.copyPixelsFromBuffer(buffer as ByteBuffer?)
+            buffer?.let { bitmap.copyPixelsFromBuffer(it) }
             image.close()
             
             return Bitmap.createBitmap(bitmap, 0, 0, image.width, image.height)

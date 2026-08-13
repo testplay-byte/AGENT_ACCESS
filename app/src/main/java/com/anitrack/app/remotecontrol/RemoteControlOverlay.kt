@@ -10,7 +10,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.anitrack.app.R
-import com.anitrack.app.remotecontrol.models.ConnectionState
+import com.anitrack.app.remotecontrol.ConnectionState
 
 class RemoteControlOverlay(
     private val context: Context,

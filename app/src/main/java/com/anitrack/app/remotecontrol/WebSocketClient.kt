@@ -34,6 +34,8 @@ class WebSocketClient() {
         @Volatile
         private var instance: WebSocketClient? = null
         
+        const val DEFAULT_WS_URL = "ws://localhost:8080/remote-control"
+        
         fun getInstance(): WebSocketClient {
             return instance ?: synchronized(this) {
                 instance ?: WebSocketClient().also { instance = it }
@@ -235,13 +237,22 @@ class WebSocketClient() {
     }
     
     private fun getDeviceId(): String {
-        return android.provider.Settings.Secure.getString(
-            android.app.ActivityThread.currentApplication()?.contentResolver,
-            android.provider.Settings.Secure.ANDROID_ID
-        ) ?: "unknown_device"
+        // Use a hash of build fingerprint as fallback device ID
+        // The actual ANDROID_ID will be set when context is available
+        return java.util.UUID.nameUUIDFromBytes(
+            "${android.os.Build.BRAND}${android.os.Build.MODEL}${android.os.Build.FINGERPRINT}".toByteArray()
+        ).toString()
     }
     
-    companion object {
-        const val DEFAULT_WS_URL = "ws://localhost:8080/remote-control"
+    /**
+     * Get the actual Android ID - should be called with application context
+     */
+    fun getAndroidId(context: android.content.Context): String {
+        return android.provider.Settings.Secure.getString(
+            context.contentResolver,
+            android.provider.Settings.Secure.ANDROID_ID
+        ) ?: getDeviceId()
     }
+    
+
 }
