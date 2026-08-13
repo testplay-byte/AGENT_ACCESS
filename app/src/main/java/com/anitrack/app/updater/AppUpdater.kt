@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import androidx.core.content.FileProvider
-import com.anitrack.app.BuildConfig
 import com.anitrack.app.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -39,7 +38,8 @@ object UpdaterConfig {
     const val DOWNLOAD_CHANNEL_ID = "app_update_download"
     
     // FileProvider authority - must match AndroidManifest.xml
-    const val FILE_PROVIDER_AUTHORITY = "${BuildConfig.APPLICATION_ID}.fileprovider"
+    // Note: APPLICATION_ID will be set at runtime via context
+    const val FILE_PROVIDER_AUTHORITY_TEMPLATE = "%s.fileprovider"
 }
 
 /**
@@ -150,7 +150,7 @@ class AppUpdater(private val context: Context) {
             }
             
             // Compare versions
-            val currentVersion = BuildConfig.VERSION_NAME
+            val currentVersion = getCurrentVersion(context)
             val latestVersion = release.tag_name.removePrefix("v").removePrefix("V")
             
             if (!isNewerVersion(currentVersion, latestVersion)) {
@@ -360,6 +360,17 @@ class AppUpdater(private val context: Context) {
         }
     }
     
+    /**
+     * Get current app version name from package manager.
+     */
+    private fun getCurrentVersion(context: Context): String {
+        return try {
+            context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "1.0.0"
+        } catch (e: Exception) {
+            "1.0.0"
+        }
+    }
+
     /**
      * Unregister the download receiver to prevent memory leaks.
      */

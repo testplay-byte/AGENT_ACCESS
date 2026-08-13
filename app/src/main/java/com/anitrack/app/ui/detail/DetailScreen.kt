@@ -15,6 +15,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -142,18 +144,27 @@ private fun DetailContent(
                 
                 // Favorite Button with gradient when active
                 Surface(
-                    onClick = onToggleFavorite,
                     shape = CircleShape,
-                    color = if (isFavorite) {
-                        Brush.linearGradient(
-                            colors = listOf(CoralAccent, OrangeAccent)
-                        )
-                    } else {
-                        Color.Black.copy(alpha = 0.45f)
-                    },
+                    color = Color.Transparent,
                     modifier = Modifier.size(48.dp)
                 ) {
-                    Box(contentAlignment = Alignment.Center) {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                if (isFavorite) {
+                                    Brush.linearGradient(
+                                        colors = listOf(CoralAccent, OrangeAccent)
+                                    )
+                                } else {
+                                    Brush.solidColor(Color.Black.copy(alpha = 0.45f))
+                                },
+                                CircleShape
+                            ),
+                        shape = CircleShape,
+                        onClick = onToggleFavorite,
+                        contentAlignment = Alignment.Center
+                    ) {
                         Icon(
                             imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                             contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
@@ -532,12 +543,12 @@ private fun formatShortStatus(status: String?): String {
     }
 }
 
-private fun getScoreColor(score: Int?): Color {
+private fun getScoreColor(score: Double?): Color {
     return when {
         score == null -> RatingAverage
-        score >= 80 -> RatingExcellent
-        score >= 60 -> RatingGood
-        score >= 40 -> RatingAverage
+        score >= 80.0 -> RatingExcellent
+        score >= 60.0 -> RatingGood
+        score >= 40.0 -> RatingAverage
         else -> RatingPoor
     }
 }

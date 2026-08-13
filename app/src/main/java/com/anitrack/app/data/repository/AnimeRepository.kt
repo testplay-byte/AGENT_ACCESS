@@ -302,7 +302,7 @@ class AnimeRepository private constructor(
                 medium = "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/${id}.jpg"
             ),
             episodes = episodes,
-            averageScore = score,
+            averageScore = score.toDouble(),
             genres = genres,
             status = status,
             seasonYear = 2024

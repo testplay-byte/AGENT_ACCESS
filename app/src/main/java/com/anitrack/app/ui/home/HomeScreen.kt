@@ -405,12 +405,12 @@ private fun ErrorScreen(message: String, onRetry: () -> Unit) {
     }
 }
 
-private fun getScoreColor(score: Int?): Color {
+private fun getScoreColor(score: Double?): Color {
     return when {
         score == null -> RatingAverage
-        score >= 80 -> RatingExcellent
-        score >= 60 -> RatingGood
-        score >= 40 -> RatingAverage
+        score >= 80.0 -> RatingExcellent
+        score >= 60.0 -> RatingGood
+        score >= 40.0 -> RatingAverage
         else -> RatingPoor
     }
 }

@@ -13,8 +13,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -28,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
@@ -117,7 +119,7 @@ private fun SearchBar(
                     )
                 )
             )
-            .padding(top = 24.dp, bottom = 20.dp, horizontal = 16.dp)
+            .padding(start = 16.dp, top = 24.dp, end = 16.dp, bottom = 20.dp)
     ) {
         // Title
         Text(
@@ -199,7 +201,7 @@ private fun SearchBar(
                             color = SkyBlue50
                         ) {
                             Icon(
-                                Icons.Default.Close,
+                                Icons.Outlined.Close,
                                 contentDescription = "Clear search",
                                 tint = SkyBlue600,
                                 modifier = Modifier.size(20.dp)
@@ -457,12 +459,12 @@ private fun SearchResultItem(
     }
 }
 
-private fun getScoreColor(score: Int?): Color {
+private fun getScoreColor(score: Double?): Color {
     return when {
         score == null -> RatingAverage
-        score >= 80 -> RatingExcellent
-        score >= 60 -> RatingGood
-        score >= 40 -> RatingAverage
+        score >= 80.0 -> RatingExcellent
+        score >= 60.0 -> RatingGood
+        score >= 40.0 -> RatingAverage
         else -> RatingPoor
     }
 }

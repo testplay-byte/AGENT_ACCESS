@@ -1,10 +1,19 @@
 package com.anitrack.app.updater
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.FileDownload
+import androidx.compose.material.icons.filled.OpenInNew
+import androidx.compose.material.icons.filled.SystemUpdate
+import androidx.compose.material.icons.outlined.OpenInNew
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,6 +29,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.anitrack.app.R
 import com.anitrack.app.ui.theme.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * Update Dialog composable that displays available update information
@@ -42,6 +53,7 @@ fun UpdateDialog(
     var downloadedFilePath by remember { mutableStateOf<String?>(null) }
     
     val appUpdater = remember { AppUpdater(context) }
+    val coroutineScope = rememberCoroutineScope()
     
     // Handle download completion callback
     LaunchedEffect(downloadState) {
@@ -112,7 +124,7 @@ fun UpdateDialog(
                             onDownload = {
                                 if (apkDownloadUrl != null) {
                                     startDownload(
-                                        context = context,
+                                        coroutineScope = coroutineScope,
                                         updater = appUpdater,
                                         url = apkDownloadUrl,
                                         fileName = "AniTrack-${release.tag_name}.apk",
@@ -180,8 +192,8 @@ private fun UpdateDialogHeader(
         ) {
             Icon(
                 imageVector = if (isDownloading) 
-                    androidx.compose.material.icons.Icons.Default.Download else 
-                    androidx.compose.material.icons.Icons.Default.Update,
+                    Icons.Default.FileDownload else 
+                    Icons.Default.SystemUpdate,
                 contentDescription = null,
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)
@@ -343,8 +355,8 @@ private fun ActionButtons(
         ) {
             Icon(
                 imageVector = if (canDownload) 
-                    androidx.compose.material.icons.Icons.Default.Download else 
-                    androidx.compose.material.icons.Icons.Default.OpenInNew,
+                    Icons.Default.Download else 
+                    Icons.Default.OpenInNew,
                 contentDescription = null,
                 modifier = Modifier.size(20.dp)
             )
@@ -371,7 +383,7 @@ private fun ActionButtons(
                     )
                 ) {
                     Icon(
-                        imageVector = androidx.compose.material.icons.Icons.Default.OpenInNew,
+                        imageVector = Icons.Outlined.OpenInNew,
                         contentDescription = null,
                         modifier = Modifier.size(18.dp)
                     )
@@ -517,7 +529,7 @@ private fun CompletedActions(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
-                imageVector = androidx.compose.material.icons.Icons.Default.CheckCircle,
+                imageVector = Icons.Default.CheckCircle,
                 contentDescription = null,
                 tint = StatusFinished,
                 modifier = Modifier.size(40.dp)
@@ -548,7 +560,7 @@ private fun CompletedActions(
                     )
                 ) {
                     Icon(
-                        imageVector = androidx.compose.material.icons.Icons.Default.InstallMobile,
+                        imageVector = Icons.Default.Download,
                         contentDescription = null,
                         modifier = Modifier.size(18.dp)
                     )
@@ -572,7 +584,7 @@ private fun CompletedActions(
  * Start a download and track its progress.
  */
 private fun startDownload(
-    context: Context,
+    coroutineScope: CoroutineScope,
     updater: AppUpdater,
     url: String,
     fileName: String,
@@ -594,9 +606,9 @@ private fun startDownload(
     }
     
     // Poll for progress updates
-    kotlinx.coroutines.GlobalScope.launch {
+    coroutineScope.launch {
         while (true) {
-            kotlinx.coroutines.delay(500) // Poll every 500ms
+            delay(500) // Poll every 500ms
             val state = updater.getDownloadProgress()
             if (state is DownloadState.Completed || state is DownloadState.Failed) {
                 break
