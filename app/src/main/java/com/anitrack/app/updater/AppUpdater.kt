@@ -94,8 +94,8 @@ sealed class DownloadState {
         
         fun getProgressFormatted(): String {
             val percent = getProgressPercent()
-            val downloaded = formatFileSize(bytesDownloaded)
-            val total = formatFileSize(totalBytes)
+            val downloaded = AppUpdater.formatFileSize(bytesDownloaded)
+            val total = AppUpdater.formatFileSize(totalBytes)
             return "$downloaded / $total ($percent%)"
         }
     }
@@ -343,9 +343,10 @@ class AppUpdater(private val context: Context) {
                 // For Android 7+, we need FileProvider
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     val apkFile = java.io.File(fileUri.path!!)
+                    val authority = UpdaterConfig.FILE_PROVIDER_AUTHORITY_TEMPLATE.format(context.packageName)
                     val contentUri = FileProvider.getUriForFile(
                         context,
-                        UpdaterConfig.FILE_PROVIDER_AUTHORITY,
+                        authority,
                         apkFile
                     )
                     setDataAndType(contentUri, "application/vnd.android.package-archive")

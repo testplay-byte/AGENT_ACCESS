@@ -144,25 +144,18 @@ private fun DetailContent(
                 
                 // Favorite Button with gradient when active
                 Surface(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clickable { onToggleFavorite() },
                     shape = CircleShape,
-                    color = Color.Transparent,
-                    modifier = Modifier.size(48.dp)
+                    color = if (isFavorite) {
+                        CoralAccent
+                    } else {
+                        Color.Black.copy(alpha = 0.45f)
+                    }
                 ) {
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                if (isFavorite) {
-                                    Brush.linearGradient(
-                                        colors = listOf(CoralAccent, OrangeAccent)
-                                    )
-                                } else {
-                                    Brush.solidColor(Color.Black.copy(alpha = 0.45f))
-                                },
-                                CircleShape
-                            ),
-                        shape = CircleShape,
-                        onClick = onToggleFavorite,
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
