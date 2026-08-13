@@ -106,15 +106,17 @@ fun AniTrackTheme(
         else -> LightColorScheme
     }
     
-    // Use LocalContext for safer window access
+    // Capture context and view OUTSIDE of SideEffect (composable context required)
     val context = LocalContext.current
+    val view = LocalView.current
     
-    if (!LocalView.current.isInEditMode) {
+    if (!view.isInEditMode) {
         SideEffect {
-            // SAFE: Only cast if context is actually an Activity
-            (context as? Activity)?.window?.let { window ->
-                window.statusBarColor = colorScheme.primary.toArgb()
-                WindowCompat.getInsetsController(window, LocalView.current).isAppearanceLightStatusBars = !darkTheme
+            // SAFE: Only access window if context is an Activity
+            val activity = context as? Activity
+            if (activity != null) {
+                activity.window.statusBarColor = colorScheme.primary.toArgb()
+                WindowCompat.getInsetsController(activity.window, view).isAppearanceLightStatusBars = !darkTheme
             }
         }
     }
