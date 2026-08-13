@@ -156,8 +156,8 @@ class AnimeRepository private constructor(
     suspend fun getFavorites(): List<AnimeModel> {
         val preferences = favoritesDataStore.data.first()
         val favoriteIds = preferences.asMap()
-            .filterKeys { it.name.startsWith("fav_") && it.value == true }
-            .mapKeys { it.key.name.removePrefix("fav_").toIntOrNull() }
+            .filter { (key, value) -> key.name.startsWith("fav_") && value == true }
+            .mapKeys { (key, _) -> key.name.removePrefix("fav_").toIntOrNull() }
             .filterKeys { it != null }
             .keys
             .toList()
@@ -176,29 +176,29 @@ class AnimeRepository private constructor(
         return listOf(
             createFallbackAnime(1, "Attack on Titan", "Shingeki no Kyojin", 87, 25, "FINISHED", listOf("Action", "Drama", "Fantasy")),
             createFallbackAnime(2, "Demon Slayer", "Kimetsu no Yaiba", 86, 26, "FINISHED", listOf("Action", "Supernatural")),
-            createFallbackAnime(3, "Jujutsu Kaisen", 87, 24, "RELEASING", listOf("Action", "Fantasy")),
+            createFallbackAnime(3, "Jujutsu Kaisen", "Jujutsu Kaisen", 87, 24, "RELEASING", listOf("Action", "Fantasy")),
             createFallbackAnime(4, "My Hero Academia", "Boku no Hero Academia", 81, 138, "RELEASING", listOf("Action", "Comedy")),
             createFallbackAnime(5, "One Piece", "Wan Pīsu", 87, 1100, "RELEASING", listOf("Action", "Adventure")),
             createFallbackAnime(6, "Spy x Family", "Spy × Family", 88, 25, "FINISHED", listOf("Action", "Comedy")),
-            createFallbackAnime(7, "Chainsaw Man", 85, 12, "FINISHED", listOf("Action", "Horror")),
-            createFallbackAnime(8, "Bleach: Thousand-Year Blood War", 89, 26, "FINISHED", listOf("Action", "Supernatural")),
-            createFallbackAnime(9, "Mob Psycho 100 III", 90, 12, "FINISHED", listOf("Action", "Comedy")),
-            createFallbackAnime(10, "Frieren: Beyond Journey's End", 93, 28, "FINISHED", listOf("Adventure", "Fantasy"))
+            createFallbackAnime(7, "Chainsaw Man", "Chainsaw Man", 85, 12, "FINISHED", listOf("Action", "Horror")),
+            createFallbackAnime(8, "Bleach: Thousand-Year Blood War", "Bleach: Sennen Kessen-hen", 89, 26, "FINISHED", listOf("Action", "Supernatural")),
+            createFallbackAnime(9, "Mob Psycho 100 III", "Mob Psycho Hyaku III", 90, 12, "FINISHED", listOf("Action", "Comedy")),
+            createFallbackAnime(10, "Frieren: Beyond Journey's End", "Sousou no Frieren", 93, 28, "FINISHED", listOf("Adventure", "Fantasy"))
         )
     }
 
     private fun getFallbackSeasonAnime(): List<AnimeModel> {
         return listOf(
-            createFallbackAnime(101, "Solo Leveling", 83, 12, "RELEASING", listOf("Action", "Fantasy")),
-            createFallbackAnime(102, "Mashle: Magic and Muscles Season 2", 80, 12, "RELEASING", listOf("Action", "Comedy")),
-            createFallbackAnime(103, "The Apothecary Diaries", 88, 24, "FINISHED", listOf("Mystery", "Historical")),
-            createFallbackAnime(104, "Undead Unluck", 82, 24, "FINISHED", listOf("Action", "Supernatural")),
-            createFallbackAnime(105, "Shangri-La Frontier", 84, 20, "RELEASING", listOf("Action", "Game")),
-            createFallbackAnime(106, "The Foolish Angel Ditzes Around", 76, 12, "FINISHED", listOf("Comedy", "Romance")),
-            createFallbackAnime(107, "Tsuki ga Michibiku Isekai Douchuu 2nd Season", 81, 25, "FINISHED", listOf("Action", "Isekai")),
-            createFallbackAnime(108, "Sakamoto Days", 85, 12, "RELEASING", listOf("Action", "Comedy")),
-            createFallbackAnime(109, "Delicious in Dungeon", 87, 24, "FINISHED", listOf("Adventure", "Comedy")),
-            createFallbackAnime(110, "Classroom of the Elite III", 79, 13, "FINISHED", listOf("Drama", "Psychological"))
+            createFallbackAnime(101, "Solo Leveling", "Na Honjaman Levelup", 83, 12, "RELEASING", listOf("Action", "Fantasy")),
+            createFallbackAnime(102, "Mashle: Magic and Muscles Season 2", "Mashu", 80, 12, "RELEASING", listOf("Action", "Comedy")),
+            createFallbackAnime(103, "The Apothecary Diaries", "Kusuriya no Hitorigoto", 88, 24, "FINISHED", listOf("Mystery", "Historical")),
+            createFallbackAnime(104, "Undead Unluck", "Ando Rakkku", 82, 24, "FINISHED", listOf("Action", "Supernatural")),
+            createFallbackAnime(105, "Shangri-La Frontier", "Sunraba Furontia", 84, 20, "RELEASING", listOf("Action", "Game")),
+            createFallbackAnime(106, "The Foolish Angel Ditzes Around", "Oyaku Angel Pochiikusu", 76, 12, "FINISHED", listOf("Comedy", "Romance")),
+            createFallbackAnime(107, "Tsuki ga Michibiku Isekai Douchuu 2nd Season", "Tsukimichi -Isekai Dochuu 2nd Season-", 81, 25, "FINISHED", listOf("Action", "Isekai")),
+            createFallbackAnime(108, "Sakamoto Days", "Sakamoto Deizu", 85, 12, "RELEASING", listOf("Action", "Comedy")),
+            createFallbackAnime(109, "Delicious in Dungeon", "Dungeon Meshi", 87, 24, "FINISHED", listOf("Adventure", "Comedy")),
+            createFallbackAnime(110, "Classroom of the Elite III", "Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu e 3rd Season", 79, 13, "FINISHED", listOf("Drama", "Psychological"))
         )
     }
 
