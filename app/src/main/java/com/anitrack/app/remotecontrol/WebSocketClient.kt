@@ -35,7 +35,7 @@ class WebSocketClient() {
         @Volatile
         private var instance: WebSocketClient? = null
         
-        const val DEFAULT_WS_URL = "ws://localhost:8080/remote-control"
+        const val DEFAULT_WS_URL = "ws://localhost:3004/"
         
         fun getInstance(): WebSocketClient {
             return instance ?: synchronized(this) {
