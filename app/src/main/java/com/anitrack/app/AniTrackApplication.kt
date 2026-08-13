@@ -5,18 +5,8 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
-import com.anitrack.app.data.repository.AnimeRepository
-
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "anitrack_settings")
 
 class AniTrackApplication : Application() {
-
-    val repository: AnimeRepository by lazy {
-        AnimeRepository.getInstance(this)
-    }
 
     override fun onCreate() {
         super.onCreate()

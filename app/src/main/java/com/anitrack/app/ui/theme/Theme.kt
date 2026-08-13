@@ -12,22 +12,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-// Light Theme Colors
+// Light Theme Colors - Sky Blue based
 private val LightColorScheme = lightColorScheme(
-    primary = Purple600,
+    primary = SkyBlue600,
     onPrimary = Color.White,
-    primaryContainer = Purple100,
-    onPrimaryContainer = Purple900,
+    primaryContainer = SkyBlue100,
+    onPrimaryContainer = SkyBlue900,
     
-    secondary = Pink500,
+    secondary = Aqua500,
     onSecondary = Color.White,
-    secondaryContainer = Pink100,
-    onSecondaryContainer = Pink900,
+    secondaryContainer = Aqua100,
+    onSecondaryContainer = Aqua900,
     
-    tertiary = TealAccent,
+    tertiary = CoralAccent,
     onTertiary = Color.White,
-    tertiaryContainer = Color(0xFFCCFBF1),
-    onTertiaryContainer = Color(0xFF134E4A),
+    tertiaryContainer = Color(0xFFFFE7E6),
+    onTertiaryContainer = Color(0xFF68100B),
     
     error = Color(0xFFBA1A1A),
     onError = Color.White,
@@ -39,7 +39,7 @@ private val LightColorScheme = lightColorScheme(
     
     surface = SurfaceLight,
     onSurface = Color(0xFF1C1B1F),
-    surfaceVariant = Purple100,
+    surfaceVariant = SkyBlue100,
     onSurfaceVariant = Color(0xFF49454F),
     
     outline = Color(0xFF74777F),
@@ -51,22 +51,22 @@ private val LightColorScheme = lightColorScheme(
     scrim = Color.Black.copy(alpha = 0.32f)
 )
 
-// Dark Theme Colors
+// Dark Theme Colors - Deep blue based
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple400,
-    onPrimary = Purple900,
-    primaryContainer = Purple800,
-    onPrimaryContainer = Purple200,
+    primary = SkyBlue400,
+    onPrimary = SkyBlue900,
+    primaryContainer = SkyBlue800,
+    onPrimaryContainer = SkyBlue200,
     
-    secondary = Pink400,
-    onSecondary = Pink900,
-    secondaryContainer = Pink800,
-    onSecondaryContainer = Pink200,
+    secondary = Aqua400,
+    onSecondary = Aqua900,
+    secondaryContainer = Aqua800,
+    onSecondaryContainer = Aqua200,
     
-    tertiary = TealAccent,
+    tertiary = CoralAccent,
     onTertiary = Color.White,
-    tertiaryContainer = Color(0xFF134E4A),
-    onTertiaryContainer = Color(0xFFCCFBF1),
+    tertiaryContainer = Color(0xFF93300B),
+    onTertiaryContainer = Color(0xFFFFE7E6),
     
     error = Color(0xFFFFB4AB),
     onError = Color(0xFF690005),
@@ -93,7 +93,7 @@ private val DarkColorScheme = darkColorScheme(
 @Composable
 fun AniTrackTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,  // Disabled to use our custom sky blue theme
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

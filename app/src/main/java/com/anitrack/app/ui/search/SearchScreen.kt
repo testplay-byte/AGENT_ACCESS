@@ -280,7 +280,7 @@ private fun SearchResultItem(
                 color = MaterialTheme.colorScheme.surfaceVariant
             ) {
                 AsyncImage(
-                    model = anime.coverImage ?: "",
+                    model = anime.coverImage?.extraLarge ?: "",
                     contentDescription = anime.title?.english ?: "",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop

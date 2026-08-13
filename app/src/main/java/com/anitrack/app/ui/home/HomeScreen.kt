@@ -257,7 +257,7 @@ private fun TrendingCard(
         Column {
             // Cover Image
             AsyncImage(
-                model = anime.coverImage ?: "",
+                model = anime.coverImage?.extraLarge ?: "",
                 contentDescription = anime.title?.english ?: anime.title?.romaji ?: "",
                 modifier = Modifier
                     .fillMaxWidth()

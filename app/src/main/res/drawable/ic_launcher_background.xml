@@ -5,15 +5,48 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
     
+    <!-- Background gradient - Sky blue to aqua -->
     <path
-        android:fillColor="#A855F7"
-        android:pathData="M0,0h108v108h-108z" />
+        android:pathData="M0,0h108v108h-108z">
+        <aapt:attr xmlns:aapt="http://schemas.android.com/ares/android" name="android:fillColor">
+            <gradient 
+                android:startY="0"
+                android:endY="108"
+                android:startX="54"
+                android:endX="54"
+                android:type="linear">
+                <item android:offset="0" android:color="#FF1890FF"/>
+                <item android:offset="1" android:color="#FF13C2C2"/>
+            </gradient>
+        </aapt:attr>
+    </path>
+    
+    <!-- Decorative circles for depth -->
+    <path
+        android:fillColor="#1AFFFFFF"
+        android:pathData="M20,85 A25,25 0,1,1 70,85 A25,25 0,1,1 20,85"/>
     
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M54,20 L54,20 A28,28 0,0,1 82,48 L82,60 A28,28 0,0,1 54,88 L54,88 A28,28 0,0,1 26,60 L26,48 A28,28 0,0,1 54,20z" />
-        
+        android:fillColor="#1AFFFFFF"
+        android:pathData="M75,30 A18,18 0,1,1 111,30 A18,18 0,1,1 75,30"/>
+    
+    <!-- Main icon shape - Rounded square with inner design -->
     <path
-        android:fillColor="#A855F7"
-        android:pathData="M44,42 L64,54 L44,66 Z" />
+        android:fillColor="#FFFFFF"
+        android:pathData="M28,28 L80,28 Q88,28 88,36 L88,72 Q88,80 80,80 L28,80 Q20,80 20,72 L20,36 Q20,28 28,28Z"/>
+    
+    <!-- Play button / Anime symbol - Stylized "A" for AniTrack -->
+    <path
+        android:fillColor="#1890FF"
+        android:pathData="M44,38 L64,38 L68,46 L40,46 Z"/>
+    
+    <path
+        android:fillColor="#13C2C2"
+        android:pathData="M42,50 L66,50 L58,70 L50,70 Z"/>
+    
+    <!-- Star sparkle accent -->
+    <path
+        android:fillColor="#FFA940"
+        android:pathData="M76,42 L78,46 L82,46 L79,49 L80,53 L76,50 L72,53 L73,49 L70,46 L74,46 Z"/>
+    
 </vector>

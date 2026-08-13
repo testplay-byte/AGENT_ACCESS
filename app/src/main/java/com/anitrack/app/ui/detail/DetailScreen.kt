@@ -93,7 +93,7 @@ private fun DetailContent(
                 .height(350.dp)
         ) {
             AsyncImage(
-                model = anime.coverImage ?: "",
+                model = anime.coverImage?.extraLarge ?: "",
                 contentDescription = anime.title?.english ?: "",
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
@@ -185,10 +185,10 @@ private fun DetailContent(
                     )
                     
                     // Native title if available
-                    if (!anime.title?.native.isNullOrEmpty()) {
+                    anime.title?.native?.takeIf { it.isNotEmpty() }?.let { nativeTitle ->
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = anime.title!!.native!!,
+                            text = nativeTitle,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

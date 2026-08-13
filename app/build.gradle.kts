@@ -2,7 +2,6 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.serialization")
-    id("com.google.devtools.ksp")
 }
 
 android {
@@ -13,12 +12,17 @@ android {
         applicationId = "com.anitrack.app"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 2
+        versionName = "1.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+        
+        // Build only for ARM64-v8 architecture (smaller APK, better performance)
+        ndk {
+            abiFilters += listOf("arm64-v8")
         }
     }
 
@@ -59,6 +63,16 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    
+    // Ensure only ARM64-v8 APK is built
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("arm64-v8")
+            isUniversalApk = false
+        }
+    }
 }
 
 dependencies {
@@ -95,9 +109,6 @@ dependencies {
 
     // Data Storage
     implementation(libs.datastore.preferences)
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    ksp(libs.room.compiler)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
