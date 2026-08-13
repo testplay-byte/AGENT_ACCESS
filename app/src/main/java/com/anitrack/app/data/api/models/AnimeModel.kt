@@ -15,9 +15,9 @@ data class AnimeModel(
     @Json(name = "episodes")
     val episodes: Int? = null,
     @Json(name = "averageScore")
-    val averageScore: Int? = null,
+    val averageScore: Double? = null,
     @Json(name = "meanScore")
-    val meanScore: Int? = null,
+    val meanScore: Double? = null,
     @Json(name = "genres")
     val genres: List<String>? = null,
     @Json(name = "tags")

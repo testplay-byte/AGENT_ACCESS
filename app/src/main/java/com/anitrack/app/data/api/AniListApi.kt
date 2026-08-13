@@ -29,7 +29,7 @@ interface AniListApi {
     ): Response<GraphQLResponse<PageResponse<AnimeModel>>>
 
     companion object {
-        const val BASE_URL = "https://graphql.anilist.info/"
+        const val BASE_URL = "https://graphql.anilist.co/"
         
         // GraphQL Queries
         const val TRENDING_QUERY = """

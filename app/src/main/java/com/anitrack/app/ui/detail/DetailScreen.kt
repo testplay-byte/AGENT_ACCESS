@@ -114,45 +114,53 @@ private fun DetailContent(
                     )
             )
             
-            // Top Bar
+            // Top Bar - Premium Style with blur effect
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .statusBarsPadding()
-                    .padding(16.dp),
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
-                IconButton(
+                // Back Button
+                Surface(
                     onClick = onBackClick,
-                    modifier = Modifier
-                        .size(44.dp)
-                        .background(
-                            color = Color.Black.copy(alpha = 0.4f),
-                            shape = CircleShape
-                        )
+                    shape = CircleShape,
+                    color = Color.Black.copy(alpha = 0.45f),
+                    modifier = Modifier.size(48.dp)
                 ) {
-                    Icon(
-                        Icons.Default.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Color.White
-                    )
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
                 
-                IconButton(
+                // Favorite Button with gradient when active
+                Surface(
                     onClick = onToggleFavorite,
-                    modifier = Modifier
-                        .size(44.dp)
-                        .background(
-                            color = Color.Black.copy(alpha = 0.4f),
-                            shape = CircleShape
+                    shape = CircleShape,
+                    color = if (isFavorite) {
+                        Brush.linearGradient(
+                            colors = listOf(CoralAccent, OrangeAccent)
                         )
+                    } else {
+                        Color.Black.copy(alpha = 0.45f)
+                    },
+                    modifier = Modifier.size(48.dp)
                 ) {
-                    Icon(
-                        imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
-                        tint = favoriteIconColor
-                    )
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
+                            tint = if (isFavorite) Color.White else favoriteIconColor,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
             }
         }
@@ -164,15 +172,15 @@ private fun DetailContent(
                 .padding(horizontal = 20.dp)
                 .offset(y = (-40).dp)
         ) {
-            // Title Card
+            // Title Card - Premium Style
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp),
+                shape = RoundedCornerShape(24.dp),
                 color = MaterialTheme.colorScheme.surface,
-                shadowElevation = 8.dp
+                shadowElevation = 12.dp
             ) {
                 Column(
-                    modifier = Modifier.padding(24.dp)
+                    modifier = Modifier.padding(28.dp)
                 ) {
                     // Title
                     Text(
@@ -201,24 +209,48 @@ private fun DetailContent(
                     
                     Spacer(modifier = Modifier.height(20.dp))
                     
-                    // Favorite Button
-                    Button(
+                    // Favorite Button - Premium Gradient Style
+                    Surface(
                         onClick = onToggleFavorite,
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if (isFavorite) Pink500 else Purple600
-                        )
+                        shape = RoundedCornerShape(14.dp),
+                        color = Color.Transparent
                     ) {
-                        Icon(
-                            imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = null
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = if (isFavorite) stringResource(R.string.detail_remove_from_favorites) 
-                                   else stringResource(R.string.detail_add_to_favorites)
-                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    brush = Brush.linearGradient(
+                                        colors = if (isFavorite) {
+                                            listOf(CoralAccent, OrangeAccent)
+                                        } else {
+                                            listOf(SkyBlue500, Aqua400)
+                                        }
+                                    ),
+                                    shape = RoundedCornerShape(14.dp)
+                                )
+                                .padding(vertical = 14.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Icon(
+                                    imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                    contentDescription = null,
+                                    tint = Color.White
+                                )
+                                Text(
+                                    text = if (isFavorite) stringResource(R.string.detail_remove_from_favorites) 
+                                           else stringResource(R.string.detail_add_to_favorites),
+                                    style = MaterialTheme.typography.titleSmall.copy(
+                                        fontWeight = FontWeight.SemiBold
+                                    ),
+                                    color = Color.White
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -249,13 +281,15 @@ private fun DetailContent(
                         anime.genres!!.forEach { genre ->
                             Surface(
                                 shape = RoundedCornerShape(20.dp),
-                                color = Purple100
+                                color = SkyBlue50,
+                                shadowElevation = 1.dp
                             ) {
                                 Text(
                                     text = genre,
                                     style = MaterialTheme.typography.labelMedium,
-                                    color = Purple700,
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                                    color = SkyBlue700,
+                                    fontWeight = FontWeight.Medium,
+                                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp)
                                 )
                             }
                         }
@@ -289,45 +323,63 @@ private fun StatsRow(anime: com.anitrack.app.data.api.models.AnimeModel) {
         StatItem(
             label = "Score",
             value = "${anime.averageScore ?: "N/A"}%",
+            icon = "★",
+            iconColor = GoldAccent,
             color = getScoreColor(anime.averageScore)
         )
         
         StatItem(
             label = "Episodes",
             value = "${anime.episodes ?: "?"}",
-            color = Purple600
+            icon = "▶",
+            iconColor = SkyBlue500,
+            color = SkyBlue600
         )
         
         StatItem(
             label = "Status",
             value = formatShortStatus(anime.status),
+            icon = "●",
+            iconColor = getStatusColor(anime.status),
             color = getStatusColor(anime.status)
         )
     }
 }
 
 @Composable
-private fun StatItem(label: String, value: String, color: Color) {
+private fun StatItem(label: String, value: String, icon: String, iconColor: Color, color: Color) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Surface(
-            shape = CircleShape,
-            color = color.copy(alpha = 0.15f)
+            shape = RoundedCornerShape(12.dp),
+            color = color.copy(alpha = 0.1f),
+            shadowElevation = 2.dp
         ) {
-            Text(
-                text = value,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = color,
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-            )
+            Column(
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = icon,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = iconColor
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = value,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = color
+                )
+            }
         }
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(6.dp))
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontWeight = FontWeight.Medium
         )
     }
 }
@@ -335,12 +387,24 @@ private fun StatItem(label: String, value: String, color: Color) {
 @Composable
 private fun InfoSection(title: Int, content: @Composable () -> Unit) {
     Column {
-        Text(
-            text = stringResource(title),
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(modifier = Modifier.height(12.dp))
+        // Section Header with accent bar
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Surface(
+                shape = RoundedCornerShape(4.dp),
+                color = SkyBlue500,
+                modifier = Modifier.size(4.dp, 18.dp)
+            ) {}
+            Text(
+                text = stringResource(title),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+        Spacer(modifier = Modifier.height(14.dp))
         content()
     }
 }
@@ -349,18 +413,30 @@ private fun InfoSection(title: Int, content: @Composable () -> Unit) {
 private fun InfoCard(title: String, content: @Composable () -> Unit) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        shadowElevation = 2.dp
     ) {
         Column(
-            modifier = Modifier.padding(20.dp)
+            modifier = Modifier.padding(22.dp)
         ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
-            )
-            Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Surface(
+                    shape = RoundedCornerShape(4.dp),
+                    color = Aqua500,
+                    modifier = Modifier.size(4.dp, 18.dp)
+                ) {}
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+            Spacer(modifier = Modifier.height(18.dp))
             content()
         }
     }
@@ -394,9 +470,36 @@ private fun ErrorContent(message: String, onRetry: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = message, style = MaterialTheme.typography.bodyLarge)
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onRetry) {
+        Surface(
+            shape = RoundedCornerShape(24.dp),
+            color = CoralAccent.copy(alpha = 0.1f),
+            modifier = Modifier.size(90.dp)
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    Icons.Default.Warning,
+                    contentDescription = null,
+                    modifier = Modifier.size(44.dp),
+                    tint = CoralAccent
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        Button(
+            onClick = onRetry,
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = SkyBlue500
+            )
+        ) {
+            Icon(Icons.Default.Refresh, contentDescription = null)
+            Spacer(modifier = Modifier.width(8.dp))
             Text(stringResource(R.string.retry))
         }
     }

@@ -68,4 +68,13 @@
     <string name="status_not_yet_released">Not Yet Released</string>
     <string name="status_cancelled">Cancelled</string>
     <string name="status_hiatus">Hiatus</string>
+    
+    <!-- App Update -->
+    <string name="update_available">Update Available</string>
+    <string name="update_downloading">Downloading AniTrack Update</string>
+    <string name="update_install">Install</string>
+    <string name="update_later">Later</string>
+    <string name="update_download_complete">Download Complete!</string>
+    <string name="update_error_download">Download failed. Please try again.</string>
+    <string name="update_version_info">Version %1$s</string>
 </resources>

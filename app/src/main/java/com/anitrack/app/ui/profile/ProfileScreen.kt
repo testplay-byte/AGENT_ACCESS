@@ -44,20 +44,7 @@ fun ProfileScreen(
                 onNavigate = { }
             )
         },
-        containerColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.profile_title),
-                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
-            )
-        }
+        containerColor = BackgroundLight
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -92,50 +79,73 @@ private fun ProfileHeader() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        shape = RoundedCornerShape(24.dp),
-        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+        shape = RoundedCornerShape(28.dp),
+        color = Color.Transparent,
+        shadowElevation = 8.dp
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
                     brush = Brush.linearGradient(
-                        colors = listOf(Purple600, Pink500)
+                        colors = listOf(
+                            SkyBlue600,
+                            SkyBlue400,
+                            Aqua300,
+                            Aqua500
+                        ),
+                        start = androidx.compose.ui.geometry.Offset(0f, 0f),
+                        end = androidx.compose.ui.geometry.Offset(1f, 1f)
                     )
                 )
-                .padding(32.dp)
+                .padding(vertical = 36.dp, horizontal = 24.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Avatar
-                Surface(
-                    modifier = Modifier.size(100.dp),
-                    shape = CircleShape,
-                    color = Color.White.copy(alpha = 0.2f),
-                    border = androidx.compose.foundation.BorderStroke(
-                        width = 4.dp,
-                        color = Color.White.copy(alpha = 0.5f)
-                    )
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            Icons.Default.Person,
-                            contentDescription = null,
-                            modifier = Modifier.size(50.dp),
-                            tint = Color.White
+                // Avatar - Premium Style with ring effect
+                Box {
+                    // Outer glow ring
+                    Surface(
+                        modifier = Modifier.size(110.dp),
+                        shape = CircleShape,
+                        color = Color.White.copy(alpha = 0.15f)
+                    ) {}
+                    
+                    // Main avatar container
+                    Surface(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .align(Alignment.Center),
+                        shape = CircleShape,
+                        color = Color.White.copy(alpha = 0.25f),
+                        border = androidx.compose.foundation.BorderStroke(
+                            width = 3.dp,
+                            color = Color.White.copy(alpha = 0.6f)
                         )
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                Icons.Default.Person,
+                                contentDescription = null,
+                                modifier = Modifier.size(48.dp),
+                                tint = Color.White
+                            )
+                        }
                     }
                 }
                 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(20.dp))
                 
                 Text(
                     text = "Anime Fan",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
                     color = Color.White
                 )
+                
+                Spacer(modifier = Modifier.height(6.dp))
                 
                 Text(
                     text = stringResource(R.string.app_description),
@@ -143,8 +153,46 @@ private fun ProfileHeader() {
                     color = Color.White.copy(alpha = 0.9f),
                     textAlign = TextAlign.Center
                 )
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                // Stats Row
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(24.dp)
+                ) {
+                    StatBadge(label = "Watched", value = "127")
+                    StatBadge(label = "Planning", value = "45")
+                    StatBadge(label = "Completed", value = "89")
+                }
             }
         }
+    }
+}
+
+@Composable
+private fun StatBadge(label: String, value: String) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Surface(
+            shape = RoundedCornerShape(12.dp),
+            color = Color.White.copy(alpha = 0.2f)
+        ) {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                color = Color.White,
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+            )
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = Color.White.copy(alpha = 0.85f)
+        )
     }
 }
 
@@ -154,62 +202,68 @@ private fun SettingsSection(
     viewModel: ProfileViewModel
 ) {
     Column {
-        Text(
-            text = stringResource(R.string.profile_settings),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
+        // Section Header with accent bar
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier.padding(horizontal = 16.dp)
-        )
+        ) {
+            Surface(
+                shape = RoundedCornerShape(4.dp),
+                color = SkyBlue500,
+                modifier = Modifier.size(4.dp, 20.dp)
+            ) {}
+            Text(
+                text = stringResource(R.string.profile_settings),
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            )
+        }
         
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(14.dp))
         
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            shape = RoundedCornerShape(16.dp),
-            color = MaterialTheme.colorScheme.surface
+            shape = RoundedCornerShape(20.dp),
+            color = MaterialTheme.colorScheme.surface,
+            shadowElevation = 3.dp
         ) {
             Column {
                 // Remote Control Toggle
                 SettingsToggleItem(
                     icon = Icons.Default.SettingsRemote,
+                    iconColor = SkyBlue500,
                     title = stringResource(R.string.profile_remote_control),
                     description = stringResource(R.string.profile_remote_control_description),
                     isToggled = uiState.isRemoteControlEnabled,
-                    onToggleChanged = { viewModel.toggleRemoteControl(it) }
-                )
-                
-                Divider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                    onToggleChanged = { viewModel.toggleRemoteControl(it) },
+                    showDivider = true
                 )
                 
                 // Dark Mode Toggle
                 SettingsToggleItem(
                     icon = Icons.Default.DarkMode,
+                    iconColor = Aqua500,
                     title = stringResource(R.string.profile_dark_mode),
                     description = "Enable dark theme",
                     isToggled = uiState.isDarkModeEnabled,
-                    onToggleChanged = { viewModel.toggleDarkMode(it) }
-                )
-                
-                Divider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                    onToggleChanged = { viewModel.toggleDarkMode(it) },
+                    showDivider = true
                 )
                 
                 // Notifications Toggle
                 SettingsToggleItem(
                     icon = Icons.Default.Notifications,
+                    iconColor = OrangeAccent,
                     title = stringResource(R.string.profile_notifications),
                     description = "Enable push notifications",
                     isToggled = uiState.isNotificationsEnabled,
-                    onToggleChanged = { viewModel.toggleNotifications(it) }
+                    onToggleChanged = { viewModel.toggleNotifications(it) },
+                    showDivider = false
                 )
             }
         }
@@ -219,84 +273,80 @@ private fun SettingsSection(
 @Composable
 private fun AboutSection(appVersion: String) {
     Column {
-        Text(
-            text = stringResource(R.string.profile_about),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
+        // Section Header with accent bar
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier.padding(horizontal = 16.dp)
-        )
+        ) {
+            Surface(
+                shape = RoundedCornerShape(4.dp),
+                color = Aqua500,
+                modifier = Modifier.size(4.dp, 20.dp)
+            ) {}
+            Text(
+                text = stringResource(R.string.profile_about),
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            )
+        }
         
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(14.dp))
         
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            shape = RoundedCornerShape(16.dp),
-            color = MaterialTheme.colorScheme.surface
+            shape = RoundedCornerShape(20.dp),
+            color = MaterialTheme.colorScheme.surface,
+            shadowElevation = 3.dp
         ) {
             Column {
                 SettingsClickableItem(
                     icon = Icons.Default.Info,
+                    iconColor = SkyBlue500,
                     title = "Version",
                     trailingText = stringResource(R.string.profile_version, appVersion),
-                    onClick = { }
-                )
-                
-                Divider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                    onClick = { },
+                    showDivider = true
                 )
                 
                 SettingsClickableItem(
                     icon = Icons.Default.Star,
+                    iconColor = GoldAccent,
                     title = stringResource(R.string.profile_rate_app),
                     trailingText = "",
-                    onClick = { }
-                )
-                
-                Divider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                    onClick = { },
+                    showDivider = true
                 )
                 
                 SettingsClickableItem(
                     icon = Icons.Default.Share,
+                    iconColor = Aqua500,
                     title = stringResource(R.string.profile_share_app),
                     trailingText = "",
-                    onClick = { }
-                )
-                
-                Divider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                    onClick = { },
+                    showDivider = true
                 )
                 
                 SettingsClickableItem(
                     icon = Icons.Default.PrivacyTip,
+                    iconColor = SkyBlue600,
                     title = stringResource(R.string.profile_privacy_policy),
                     trailingText = "",
-                    onClick = { }
-                )
-                
-                Divider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                    onClick = { },
+                    showDivider = true
                 )
                 
                 SettingsClickableItem(
                     icon = Icons.Default.Description,
+                    iconColor = Aqua600,
                     title = stringResource(R.string.profile_terms_of_service),
                     trailingText = "",
-                    onClick = { }
+                    onClick = { },
+                    showDivider = false
                 )
             }
         }
@@ -306,94 +356,136 @@ private fun AboutSection(appVersion: String) {
 @Composable
 private fun SettingsToggleItem(
     icon: ImageVector,
+    iconColor: Color = SkyBlue500,
     title: String,
     description: String,
     isToggled: Boolean,
-    onToggleChanged: (Boolean) -> Unit
+    onToggleChanged: (Boolean) -> Unit,
+    showDivider: Boolean = false
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onToggleChanged(!isToggled) }
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            icon,
-            contentDescription = null,
-            tint = Purple600,
-            modifier = Modifier.size(24.dp)
-        )
-        
-        Spacer(modifier = Modifier.width(16.dp))
-        
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Medium
-            )
-            Text(
-                text = description,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onToggleChanged(!isToggled) }
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Surface(
+                shape = RoundedCornerShape(10.dp),
+                color = iconColor.copy(alpha = 0.1f)
+            ) {
+                Icon(
+                    icon,
+                    contentDescription = null,
+                    tint = iconColor,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+            
+            Spacer(modifier = Modifier.width(14.dp))
+            
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            
+            Switch(
+                checked = isToggled,
+                onCheckedChange = onToggleChanged,
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = Color.White,
+                    checkedTrackColor = SkyBlue500,
+                    uncheckedThumbColor = MaterialTheme.colorScheme.outline,
+                    uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant
+                )
             )
         }
-        
-        Switch(
-            checked = isToggled,
-            onCheckedChange = onToggleChanged,
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = Color.White,
-                checkedTrackColor = Purple600,
-                uncheckedThumbColor = MaterialTheme.colorScheme.outline,
-                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant
+        if (showDivider) {
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
             )
-        )
+        }
     }
 }
 
 @Composable
 private fun SettingsClickableItem(
     icon: ImageVector,
+    iconColor: Color = SkyBlue500,
     title: String,
     trailingText: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    showDivider: Boolean = false
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            icon,
-            contentDescription = null,
-            tint = Purple600,
-            modifier = Modifier.size(24.dp)
-        )
-        
-        Spacer(modifier = Modifier.width(16.dp))
-        
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.Medium,
-            modifier = Modifier.weight(1f)
-        )
-        
-        if (trailingText.isNotEmpty()) {
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onClick() }
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Surface(
+                shape = RoundedCornerShape(10.dp),
+                color = iconColor.copy(alpha = 0.1f)
+            ) {
+                Icon(
+                    icon,
+                    contentDescription = null,
+                    tint = iconColor,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+            
+            Spacer(modifier = Modifier.width(14.dp))
+            
             Text(
-                text = trailingText,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                text = title,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f)
             )
-        } else {
-            Icon(
-                Icons.Default.ChevronRight,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            
+            if (trailingText.isNotEmpty()) {
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant
+                ) {
+                    Text(
+                        text = trailingText,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                    )
+                }
+            } else {
+                Icon(
+                    Icons.Default.ChevronRight,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+        if (showDivider) {
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
             )
         }
     }

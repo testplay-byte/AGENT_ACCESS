@@ -54,20 +54,7 @@ fun FavoritesScreen(
                 onNavigate = { }
             )
         },
-        containerColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.favorites_title),
-                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
-            )
-        }
+        containerColor = BackgroundLight
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
             when {
@@ -89,7 +76,22 @@ private fun LoadingContent() {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator(color = Purple600)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CircularProgressIndicator(
+                color = CoralAccent,
+                trackColor = CoralAccent.copy(alpha = 0.2f),
+                strokeWidth = 3.dp,
+                modifier = Modifier.size(44.dp)
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = "Loading favorites...",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
     }
 }
 
@@ -102,17 +104,27 @@ private fun EmptyFavorites() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Icon(
-            Icons.Default.FavoriteBorder,
-            contentDescription = null,
-            modifier = Modifier.size(80.dp),
-            tint = Pink300
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+        Surface(
+            shape = RoundedCornerShape(24.dp),
+            color = CoralAccent.copy(alpha = 0.1f),
+            modifier = Modifier.size(100.dp)
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    Icons.Default.FavoriteBorder,
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp),
+                    tint = CoralAccent
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = stringResource(R.string.favorites_empty),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
@@ -132,9 +144,15 @@ private fun FavoritesList(
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 80.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 80.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
+        // Header Section
+        item {
+            FavoritesHeader()
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+        
         items(favorites, key = { it.id }) { anime ->
             AnimatedVisibility(
                 visible = true,
@@ -161,21 +179,25 @@ private fun FavoriteCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     ) {
         Row(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Cover Image with favorite indicator
             Box(
-                modifier = Modifier.size(width = 80.dp, height = 110.dp)
+                modifier = Modifier.size(width = 85.dp, height = 115.dp)
             ) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    shape = RoundedCornerShape(10.dp),
-                    color = MaterialTheme.colorScheme.surfaceVariant
+                    shape = RoundedCornerShape(14.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    shadowElevation = 3.dp
                 ) {
                     AsyncImage(
                         model = anime.coverImage?.extraLarge ?: "",
@@ -185,13 +207,18 @@ private fun FavoriteCard(
                     )
                 }
                 
-                // Favorite badge
+                // Favorite badge - Premium Style
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(4.dp)
-                        .size(28.dp)
-                        .background(Pink500, CircleShape),
+                        .padding(6.dp)
+                        .size(30.dp)
+                        .background(
+                            brush = Brush.linearGradient(
+                                colors = listOf(CoralAccent, OrangeAccent)
+                            ),
+                            CircleShape
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -215,52 +242,71 @@ private fun FavoriteCard(
                     style = MaterialTheme.typography.titleMedium,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Score Badge
+                    // Score Badge - Premium Style
                     Surface(
-                        shape = CircleShape,
+                        shape = RoundedCornerShape(6.dp),
                         color = getScoreColor(anime.averageScore).copy(alpha = 0.15f)
                     ) {
-                        Text(
-                            text = "${anime.averageScore ?: "N/A"}%",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = getScoreColor(anime.averageScore),
-                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                        )
+                        Row(
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(3.dp)
+                        ) {
+                            Text(
+                                text = "★",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = GoldAccent
+                            )
+                            Text(
+                                text = "${anime.averageScore ?: "N/A"}",
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                color = getScoreColor(anime.averageScore)
+                            )
+                        }
                     }
                     
                     // Episodes
-                    Text(
-                        text = "${anime.episodes ?: "?"} eps",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Surface(
+                        shape = RoundedCornerShape(6.dp),
+                        color = Aqua50
+                    ) {
+                        Text(
+                            text = "${anime.episodes ?: "?"} eps",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Aqua700,
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp)
+                        )
+                    }
                 }
                 
                 if (!anime.genres.isNullOrEmpty()) {
-                    Spacer(modifier = Modifier.height(6.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         anime.genres!!.take(2).forEach { genre ->
                             Surface(
-                                shape = RoundedCornerShape(4.dp),
-                                color = Pink100
+                                shape = RoundedCornerShape(8.dp),
+                                color = CoralAccent.copy(alpha = 0.1f)
                             ) {
                                 Text(
                                     text = genre,
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = Pink700,
-                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                    color = CoralAccent,
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
                                 )
                             }
                         }
@@ -268,12 +314,70 @@ private fun FavoriteCard(
                 }
             }
             
-            // Remove button
-            IconButton(onClick = onRemove) {
+            // Remove button - Styled
+            IconButton(
+                onClick = onRemove,
+                modifier = Modifier
+                    .size(40.dp)
+                    .background(
+                        color = CoralAccent.copy(alpha = 0.1f),
+                        shape = CircleShape
+                    )
+            ) {
                 Icon(
                     Icons.Default.Delete,
                     contentDescription = "Remove from favorites",
-                    tint = MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
+                    tint = CoralAccent,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FavoritesHeader() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        CoralAccent.copy(alpha = 0.9f),
+                        OrangeAccent.copy(alpha = 0.8f)
+                    )
+                ),
+                shape = RoundedCornerShape(24.dp)
+            )
+            .padding(24.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Surface(
+                shape = RoundedCornerShape(12.dp),
+                color = Color.White.copy(alpha = 0.25f)
+            ) {
+                Icon(
+                    Icons.Default.Favorite,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.padding(10.dp)
+                )
+            }
+            Column {
+                Text(
+                    text = stringResource(R.string.favorites_title),
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                )
+                Text(
+                    text = "Your collection of loved anime",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White.copy(alpha = 0.9f)
                 )
             }
         }

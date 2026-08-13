@@ -1,6 +1,9 @@
 package com.anitrack.app.data.repository
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -31,6 +34,15 @@ class AnimeRepository private constructor(
 ) {
     
     private val favoritesDataStore = context.favoritesDataStore
+    private val tag = "AnimeRepository"
+    
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+            ?: return false
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
     
     companion object {
         @Volatile
@@ -47,6 +59,11 @@ class AnimeRepository private constructor(
     }
 
     suspend fun getTrendingAnime(): List<AnimeModel> {
+        if (!isNetworkAvailable()) {
+            Log.w(tag, "No network connection available, using fallback data")
+            return getFallbackTrendingAnime()
+        }
+        
         try {
             val request = GraphQLRequest(
                 query = AniListApi.TRENDING_QUERY,
@@ -57,18 +74,35 @@ class AnimeRepository private constructor(
             
             if (response.isSuccessful) {
                 val body = response.body()
-                body?.data?.page?.media?.let { mediaList ->
-                    return mediaList.map { it.copy(coverImage = it.coverImage?.copy(extraLarge = it.getCoverUrl())) }
+                
+                // Check for GraphQL errors
+                body?.errors?.let { errors ->
+                    Log.e(tag, "GraphQL errors in getTrendingAnime: ${errors.mapNotNull { it.message }.joinToString()}")
                 }
+                
+                body?.data?.page?.media?.let { mediaList ->
+                    Log.d(tag, "Successfully fetched ${mediaList.size} trending anime")
+                    return mediaList
+                }
+                
+                Log.w(tag, "getTrendingAnime returned null media list, using fallback")
+            } else {
+                Log.e(tag, "getTrendingAnime HTTP error: ${response.code()} - ${response.message()}")
             }
             
             return getFallbackTrendingAnime()
         } catch (e: Exception) {
+            Log.e(tag, "Exception in getTrendingAnime", e)
             return getFallbackTrendingAnime()
         }
     }
 
     suspend fun searchAnime(query: String): List<AnimeModel> {
+        if (!isNetworkAvailable()) {
+            Log.w(tag, "No network connection available for search")
+            return emptyList()
+        }
+        
         try {
             val request = GraphQLRequest(
                 query = AniListApi.SEARCH_QUERY,
@@ -79,18 +113,32 @@ class AnimeRepository private constructor(
             
             if (response.isSuccessful) {
                 val body = response.body()
-                body?.data?.page?.media?.let { mediaList ->
-                    return mediaList.map { it.copy(coverImage = it.coverImage?.copy(extraLarge = it.getCoverUrl())) }
+                
+                // Check for GraphQL errors
+                body?.errors?.let { errors ->
+                    Log.e(tag, "GraphQL errors in searchAnime: ${errors.mapNotNull { it.message }.joinToString()}")
                 }
+                
+                body?.data?.page?.media?.let { mediaList ->
+                    Log.d(tag, "Search for '$query' returned ${mediaList.size} results")
+                    return mediaList
+                }
+            } else {
+                Log.e(tag, "searchAnime HTTP error: ${response.code()} - ${response.message()}")
             }
             
             return emptyList()
         } catch (e: Exception) {
+            Log.e(tag, "Exception in searchAnime", e)
             throw e
         }
     }
 
     suspend fun getAnimeById(animeId: Int): AnimeModel {
+        if (!isNetworkAvailable()) {
+            throw Exception("No network connection available")
+        }
+        
         try {
             val request = GraphQLRequest(
                 query = AniListApi.DETAIL_QUERY,
@@ -101,18 +149,34 @@ class AnimeRepository private constructor(
             
             if (response.isSuccessful) {
                 val body = response.body()
-                body?.data?.media?.let { anime ->
-                    return anime.copy(coverImage = anime.coverImage?.copy(extraLarge = anime.getCoverUrl()))
+                
+                // Check for GraphQL errors
+                body?.errors?.let { errors ->
+                    Log.e(tag, "GraphQL errors in getAnimeById: ${errors.mapNotNull { it.message }.joinToString()}")
                 }
+                
+                body?.data?.media?.let { anime ->
+                    Log.d(tag, "Successfully fetched anime details for id=$animeId")
+                    return anime
+                }
+                
+                throw Exception("Anime not found for id=$animeId")
+            } else {
+                Log.e(tag, "getAnimeById HTTP error: ${response.code()} - ${response.message()}")
+                throw Exception("HTTP error ${response.code()}: Failed to load anime details")
             }
-            
-            throw Exception("Failed to load anime details")
         } catch (e: Exception) {
+            Log.e(tag, "Exception in getAnimeById", e)
             throw e
         }
     }
 
     suspend fun getPopularThisSeason(): List<AnimeModel> {
+        if (!isNetworkAvailable()) {
+            Log.w(tag, "No network connection available, using fallback data")
+            return getFallbackSeasonAnime()
+        }
+        
         try {
             val request = GraphQLRequest(
                 query = AniListApi.SEASON_POPULAR_QUERY,
@@ -123,13 +187,25 @@ class AnimeRepository private constructor(
             
             if (response.isSuccessful) {
                 val body = response.body()
-                body?.data?.page?.media?.let { mediaList ->
-                    return mediaList.map { it.copy(coverImage = it.coverImage?.copy(extraLarge = it.getCoverUrl())) }
+                
+                // Check for GraphQL errors
+                body?.errors?.let { errors ->
+                    Log.e(tag, "GraphQL errors in getPopularThisSeason: ${errors.mapNotNull { it.message }.joinToString()}")
                 }
+                
+                body?.data?.page?.media?.let { mediaList ->
+                    Log.d(tag, "Successfully fetched ${mediaList.size} seasonal anime")
+                    return mediaList
+                }
+                
+                Log.w(tag, "getPopularThisSeason returned null media list, using fallback")
+            } else {
+                Log.e(tag, "getPopularThisSeason HTTP error: ${response.code()} - ${response.message()}")
             }
             
             return getFallbackSeasonAnime()
         } catch (e: Exception) {
+            Log.e(tag, "Exception in getPopularThisSeason", e)
             return getFallbackSeasonAnime()
         }
     }

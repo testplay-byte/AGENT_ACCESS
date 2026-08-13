@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -59,15 +60,7 @@ fun SearchScreen(
                 onNavigate = { }
             )
         },
-        containerColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            TopAppBar(
-                title = { /* Empty - we use custom search bar */ },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
-            )
-        }
+        containerColor = BackgroundLight
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -111,65 +104,108 @@ private fun SearchBar(
     focusRequester: FocusRequester,
     focusManager: FocusManager
 ) {
-    Surface(
+    // Header section with gradient background
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        shape = RoundedCornerShape(28.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant,
-        shadowElevation = 2.dp
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                Icons.Default.Search,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(24.dp)
-            )
-            
-            Spacer(modifier = Modifier.width(12.dp))
-            
-            TextField(
-                value = query,
-                onValueChange = onQueryChange,
-                modifier = Modifier
-                    .weight(1f)
-                    .focusRequester(focusRequester),
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.search_hint),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        SkyBlue500,
+                        SkyBlue400,
+                        Aqua400
                     )
-                },
-                textStyle = MaterialTheme.typography.bodyLarge,
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
                 )
             )
-            
-            AnimatedVisibility(
-                visible = query.isNotEmpty(),
-                enter = fadeIn(),
-                exit = fadeOut()
+            .padding(top = 24.dp, bottom = 20.dp, horizontal = 16.dp)
+    ) {
+        // Title
+        Text(
+            text = "Search Anime",
+            style = MaterialTheme.typography.headlineSmall.copy(
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+        )
+        
+        Spacer(modifier = Modifier.height(4.dp))
+        
+        Text(
+            text = "Find your next favorite anime",
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.White.copy(alpha = 0.85f)
+        )
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        // Search Input Field - Premium Style
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            color = Color.White,
+            shadowElevation = 6.dp
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = onClear) {
-                    Icon(
-                        Icons.Default.Clear,
-                        contentDescription = "Clear search",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = null,
+                    tint = SkyBlue500,
+                    modifier = Modifier.size(24.dp)
+                )
+                
+                Spacer(modifier = Modifier.width(12.dp))
+                
+                TextField(
+                    value = query,
+                    onValueChange = onQueryChange,
+                    modifier = Modifier
+                        .weight(1f)
+                        .focusRequester(focusRequester),
+                    placeholder = {
+                        Text(
+                            text = stringResource(R.string.search_hint),
+                            color = SkyBlue300
+                        )
+                    },
+                    textStyle = MaterialTheme.typography.bodyLarge.copy(
+                        color = MaterialTheme.colorScheme.onSurface
+                    ),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                    keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        cursorColor = SkyBlue500
                     )
+                )
+                
+                AnimatedVisibility(
+                    visible = query.isNotEmpty(),
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    IconButton(onClick = onClear) {
+                        Surface(
+                            shape = CircleShape,
+                            color = SkyBlue50
+                        ) {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = "Clear search",
+                                tint = SkyBlue600,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -185,22 +221,34 @@ private fun InitialState() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Icon(
-            Icons.Default.Search,
-            contentDescription = null,
-            modifier = Modifier.size(80.dp),
-            tint = Purple300
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+        Surface(
+            shape = RoundedCornerShape(24.dp),
+            color = SkyBlue50,
+            modifier = Modifier.size(100.dp)
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp),
+                    tint = SkyBlue400
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = "Find Your Anime",
-            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+            style = MaterialTheme.typography.headlineSmall.copy(
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "Search for anime by title, genre, or keyword",
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -211,7 +259,22 @@ private fun LoadingState() {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator(color = Purple600)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CircularProgressIndicator(
+                color = SkyBlue500,
+                trackColor = SkyBlue100,
+                strokeWidth = 3.dp,
+                modifier = Modifier.size(44.dp)
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = "Searching...",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
     }
 }
 
@@ -266,18 +329,22 @@ private fun SearchResultItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     ) {
         Row(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Cover Image
+            // Cover Image with subtle border
             Surface(
-                modifier = Modifier.size(width = 70.dp, height = 100.dp),
-                shape = RoundedCornerShape(8.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant
+                modifier = Modifier.size(width = 75.dp, height = 105.dp),
+                shape = RoundedCornerShape(12.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                shadowElevation = 2.dp
             ) {
                 AsyncImage(
                     model = anime.coverImage?.extraLarge ?: "",
@@ -299,62 +366,87 @@ private fun SearchResultItem(
                     style = MaterialTheme.typography.titleMedium,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Score Badge
+                    // Score Badge - Premium Style
                     Surface(
-                        shape = CircleShape,
+                        shape = RoundedCornerShape(6.dp),
                         color = getScoreColor(anime.averageScore).copy(alpha = 0.15f)
                     ) {
-                        Text(
-                            text = "${anime.averageScore ?: "N/A"}%",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = getScoreColor(anime.averageScore),
-                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                        )
+                        Row(
+                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(3.dp)
+                ) {
+                    Text(
+                        text = "★",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = GoldAccent
+                    )
+                    Text(
+                        text = "${anime.averageScore ?: "N/A"}",
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = getScoreColor(anime.averageScore)
+                    )
+                }
                     }
                     
                     // Episodes
-                    Text(
-                        text = "${anime.episodes ?: "?"} eps",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Surface(
+                        shape = RoundedCornerShape(6.dp),
+                        color = Aqua50
+                    ) {
+                        Text(
+                            text = "${anime.episodes ?: "?"} eps",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Aqua700,
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp)
+                        )
+                    }
                     
                     // Status
                     if (!anime.status.isNullOrEmpty()) {
-                        Text(
-                            text = anime.status!!,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = getStatusColor(anime.status!!)
-                        )
+                        Surface(
+                            shape = RoundedCornerShape(6.dp),
+                            color = getStatusColor(anime.status!!).copy(alpha = 0.15f)
+                        ) {
+                            Text(
+                                text = formatStatusShort(anime.status!!),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = getStatusColor(anime.status!!),
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp)
+                            )
+                        }
                     }
                 }
                 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 
                 // Genres
                 if (!anime.genres.isNullOrEmpty()) {
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         anime.genres!!.take(3).forEach { genre ->
                             Surface(
-                                shape = RoundedCornerShape(4.dp),
-                                color = Purple100
+                                shape = RoundedCornerShape(8.dp),
+                                color = SkyBlue50
                             ) {
                                 Text(
                                     text = genre,
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = Purple700,
-                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                    color = SkyBlue700,
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
                                 )
                             }
                         }
@@ -382,5 +474,15 @@ private fun getStatusColor(status: String): Color {
         "NOT_YET_RELEASED" -> StatusNotYetReleased
         "CANCELLED" -> StatusCancelled
         else -> StatusHiatus
+    }
+}
+
+private fun formatStatusShort(status: String): String {
+    return when (status.uppercase()) {
+        "FINISHED" -> "Done"
+        "RELEASING" -> "Airing"
+        "NOT_YET_RELEASED" -> "TBA"
+        "CANCELLED" -> "Cancelled"
+        else -> status
     }
 }

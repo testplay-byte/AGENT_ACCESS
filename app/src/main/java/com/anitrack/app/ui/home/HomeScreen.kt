@@ -38,6 +38,7 @@ import com.anitrack.app.data.api.models.AnimeModel
 import com.anitrack.app.ui.components.AnimeCard
 import com.anitrack.app.ui.components.AniTrackBottomNavigation
 import com.anitrack.app.ui.components.LoadingScreen
+import androidx.compose.ui.geometry.Offset
 import com.anitrack.app.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,30 +56,7 @@ fun HomeScreen(
                 onNavigate = { }
             )
         },
-        containerColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "AniTrack",
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            brush = Brush.linearGradient(
-                                colors = listOf(Purple600, Pink500)
-                            )
-                        )
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ),
-                actions = {
-                    IconButton(onClick = { viewModel.refresh() }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
-                    }
-                }
-            )
-        }
+        containerColor = BackgroundLight
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
             when {
@@ -145,10 +123,10 @@ private fun WelcomeSection() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+            containerColor = Color.Transparent
         )
     ) {
         Box(
@@ -157,23 +135,58 @@ private fun WelcomeSection() {
                 .background(
                     brush = Brush.linearGradient(
                         colors = listOf(
-                            Purple600.copy(alpha = 0.8f),
-                            Pink500.copy(alpha = 0.6f)
-                        )
+                            SkyBlue600,
+                            SkyBlue400,
+                            Aqua400,
+                            Aqua500
+                        ),
+                        start = androidx.compose.ui.geometry.Offset(0f, 0f),
+                        end = androidx.compose.ui.geometry.Offset(1f, 1f)
                     )
                 )
-                .padding(24.dp)
+                .padding(28.dp)
         ) {
             Column {
+                // App Logo/Brand
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = Color.White.copy(alpha = 0.25f)
+                    ) {
+                        Text(
+                            text = "A",
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            ),
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = "AniTrack",
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    )
+                }
+                
+                Spacer(modifier = Modifier.height(20.dp))
+                
                 Text(
                     text = stringResource(R.string.home_welcome_back),
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.SemiBold
+                    ),
                     color = Color.White
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = "Discover and track your favorite anime!",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyLarge,
                     color = Color.White.copy(alpha = 0.9f)
                 )
             }
@@ -190,18 +203,32 @@ private fun SectionHeader(title: Int, onSeeAll: (() -> Unit)? = null) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = stringResource(title),
-            style = MaterialTheme.typography.headlineSmall.copy(
-                fontWeight = FontWeight.Bold
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            // Decorative accent bar
+            Surface(
+                shape = RoundedCornerShape(4.dp),
+                color = SkyBlue500,
+                modifier = Modifier.size(4.dp, 20.dp)
+            ) {}
+            Text(
+                text = stringResource(title),
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
             )
-        )
+        }
         if (onSeeAll != null) {
             TextButton(onClick = onSeeAll) {
                 Text(
                     text = stringResource(R.string.see_all),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    color = SkyBlue600
                 )
             }
         }
@@ -248,65 +275,98 @@ private fun TrendingCard(
 ) {
     Card(
         modifier = Modifier
-            .width(160.dp)
+            .width(170.dp)
             .scale(scale)
             .clickable { onClick() },
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     ) {
         Column {
-            // Cover Image
-            AsyncImage(
-                model = anime.coverImage?.extraLarge ?: "",
-                contentDescription = anime.title?.english ?: anime.title?.romaji ?: "",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(220.dp),
-                contentScale = ContentScale.Crop
-            )
+            // Cover Image with gradient overlay
+            Box {
+                AsyncImage(
+                    model = anime.coverImage?.extraLarge ?: "",
+                    contentDescription = anime.title?.english ?: anime.title?.romaji ?: "",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(230.dp),
+                    contentScale = ContentScale.Crop
+                )
+                
+                // Subtle gradient at bottom of image
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp)
+                        .align(Alignment.BottomCenter)
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.6f))
+                            )
+                        )
+                )
+            }
             
-            // Info Overlay
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(12.dp)
+            // Info Section
+            Column(
+                modifier = Modifier.padding(14.dp)
             ) {
-                Column {
-                    Text(
-                        text = anime.title?.english 
-                            ?: anime.title?.romaji 
-                            ?: "Unknown Title",
-                        style = MaterialTheme.typography.titleSmall,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    
-                    Spacer(modifier = Modifier.height(6.dp))
-                    
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                Text(
+                    text = anime.title?.english 
+                        ?: anime.title?.romaji 
+                        ?: "Unknown Title",
+                    style = MaterialTheme.typography.titleSmall,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                
+                Spacer(modifier = Modifier.height(10.dp))
+                
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    // Score Badge - Premium Style
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = getScoreColor(anime.averageScore).copy(alpha = 0.15f),
+                        shadowElevation = 1.dp
                     ) {
-                        // Score Badge
-                        Surface(
-                            shape = CircleShape,
-                            color = getScoreColor(anime.averageScore).copy(alpha = 0.2f)
+                        Row(
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             Text(
-                                text = "${anime.averageScore ?: "N/A"}%",
+                                text = "★",
                                 style = MaterialTheme.typography.labelSmall,
-                                color = getScoreColor(anime.averageScore),
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                                color = GoldAccent
+                            )
+                            Text(
+                                text = "${anime.averageScore ?: "N/A"}",
+                                style = MaterialTheme.typography.labelMedium.copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                color = getScoreColor(anime.averageScore)
                             )
                         }
-                        
-                        // Episodes
+                    }
+                    
+                    // Episodes
+                    Surface(
+                        shape = RoundedCornerShape(6.dp),
+                        color = SkyBlue50
+                    ) {
                         Text(
                             text = "${anime.episodes ?: "?"} eps",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            style = MaterialTheme.typography.labelSmall,
+                            color = SkyBlue700,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                         )
                     }
                 }
