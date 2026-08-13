@@ -3,6 +3,7 @@ package com.anitrack.app.remotecontrol
 import android.accessibilityservice.AccessibilityService
 import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
 import android.os.Looper

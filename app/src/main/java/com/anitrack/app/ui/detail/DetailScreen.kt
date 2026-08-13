@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,10 +26,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.anitrack.app.R
 import com.anitrack.app.ui.components.LoadingScreen
@@ -39,9 +43,12 @@ import com.anitrack.app.ui.theme.*
 fun DetailScreen(
     animeId: Int,
     onBackClick: () -> Unit,
-    viewModel: DetailViewModel = remember { DetailViewModel.create(android.app.ActivityThread.currentApplication()!!) }
+    viewModel: DetailViewModel = remember { 
+        val context = LocalContext.current.applicationContext
+        DetailViewModel.create(context)
+    }
 ) {
-    val uiState by viewModel.uiState
+    val uiState = viewModel.uiState.collectAsState().value
     
     LaunchedEffect(animeId) {
         viewModel.loadAnimeDetails(animeId)
@@ -238,8 +245,8 @@ private fun DetailContent(
             if (!anime.genres.isNullOrEmpty()) {
                 InfoSection(title = R.string.detail_genres) {
                     FlowRow(
-                        mainAxisSpacing = 8.dp,
-                        crossAxisSpacing = 8.dp
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         anime.genres!!.forEach { genre ->
                             Surface(
@@ -404,12 +411,12 @@ private fun stripHtmlTags(html: String): String {
 
 private fun formatStatus(status: String?): String {
     return when (status?.uppercase()) {
-        "FINISHED" -> stringResource(R.string.status_finished)
-        "RELEASING" -> stringResource(R.string.status_releasing)
-        "NOT_YET_RELEASED" -> stringResource(R.string.status_not_yet_released)
-        "CANCELLED" -> stringResource(R.string.status_cancelled)
-        "HIATUS" -> stringResource(R.string.status_hiatus)
-        else -> status ?: stringResource(R.string.detail_not_available)
+        "FINISHED" -> "Finished"
+        "RELEASING" -> "Releasing"
+        "NOT_YET_RELEASED" -> "Not Yet Released"
+        "CANCELLED" -> "Cancelled"
+        "HIATUS" -> "Hiatus"
+        else -> status ?: "N/A"
     }
 }
 

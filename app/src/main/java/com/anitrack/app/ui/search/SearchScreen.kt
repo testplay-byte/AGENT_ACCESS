@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,7 +26,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
@@ -39,10 +43,13 @@ import com.anitrack.app.ui.theme.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
-    viewModel: SearchViewModel = remember { SearchViewModel.create(android.app.ActivityThread.currentApplication()!!) },
+    viewModel: SearchViewModel = remember { 
+        val context = LocalContext.current.applicationContext
+        SearchViewModel.create(context)
+    },
     onAnimeClick: (Int) -> Unit
 ) {
-    val uiState by viewModel.uiState
+    val uiState = viewModel.uiState.collectAsState().value
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     
