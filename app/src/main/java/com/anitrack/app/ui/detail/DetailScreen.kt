@@ -18,6 +18,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,7 +29,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.anitrack.app.R
 import com.anitrack.app.ui.components.LoadingScreen
@@ -39,7 +39,7 @@ import com.anitrack.app.ui.theme.*
 fun DetailScreen(
     animeId: Int,
     onBackClick: () -> Unit,
-    viewModel: DetailViewModel = hiltViewModel()
+    viewModel: DetailViewModel = remember { DetailViewModel.create(android.app.ActivityThread.currentApplication()!!) }
 ) {
     val uiState by viewModel.uiState
     

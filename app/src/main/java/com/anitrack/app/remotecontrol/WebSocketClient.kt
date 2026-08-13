@@ -19,8 +19,6 @@ import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 
 enum class ConnectionState {
     DISCONNECTED,
@@ -30,8 +28,18 @@ enum class ConnectionState {
     ERROR
 }
 
-@Singleton
-class WebSocketClient @Inject constructor() {
+class WebSocketClient() {
+    
+    companion object {
+        @Volatile
+        private var instance: WebSocketClient? = null
+        
+        fun getInstance(): WebSocketClient {
+            return instance ?: synchronized(this) {
+                instance ?: WebSocketClient().also { instance = it }
+            }
+        }
+    }
     
     private val TAG = "WebSocketClient"
     

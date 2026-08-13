@@ -10,7 +10,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.anitrack.app.ui.navigation.AniTrackNavHost
 import com.anitrack.app.ui.theme.AniTrackTheme
-import dagger.hilt.android.AndroidEntryPoint
 
 class MainActivity : ComponentActivity() {
     

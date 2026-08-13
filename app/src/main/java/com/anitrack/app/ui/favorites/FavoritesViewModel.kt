@@ -4,12 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anitrack.app.data.api.models.AnimeModel
 import com.anitrack.app.data.repository.AnimeRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import android.content.Context
 
 data class FavoritesUiState(
     val isLoading: Boolean = true,
@@ -18,10 +17,17 @@ data class FavoritesUiState(
     val error: String? = null
 )
 
-@HiltViewModel
-class FavoritesViewModel @Inject constructor(
+class FavoritesViewModel(
     private val repository: AnimeRepository
 ) : ViewModel() {
+
+    companion object {
+        fun create(context: Context): FavoritesViewModel {
+            return FavoritesViewModel(
+                repository = AnimeRepository.getInstance(context)
+            )
+        }
+    }
 
     private val _uiState = MutableStateFlow(FavoritesUiState())
     val uiState: StateFlow<FavoritesUiState> = _uiState.asStateFlow()

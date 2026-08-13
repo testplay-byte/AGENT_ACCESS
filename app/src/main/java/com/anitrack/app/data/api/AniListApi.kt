@@ -1,6 +1,8 @@
 package com.anitrack.app.data.api
 
 import com.anitrack.app.data.api.models.*
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import retrofit2.Response
 import retrofit2.http.*
 

@@ -7,16 +7,11 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import com.anitrack.app.data.api.AniListApi
-import com.anitrack.app.data.api.GraphQLRequest
 import com.anitrack.app.data.api.MediaData
+import com.anitrack.app.data.api.models.GraphQLRequest
 import com.anitrack.app.data.api.models.AnimeModel
 import com.anitrack.app.data.api.models.CoverImageModel
 import com.anitrack.app.data.api.models.TitleModel
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -25,15 +20,12 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 
 val Context.favoritesDataStore: DataStore<Preferences> by preferencesDataStore(name = "favorites")
 
-@Singleton
-class AnimeRepository @Inject constructor(
+class AnimeRepository private constructor(
     private val api: AniListApi,
-    @ApplicationContext private val context: Context
+    private val context: Context
 ) {
     
     private val favoritesDataStore = context.favoritesDataStore
@@ -240,21 +232,7 @@ class AnimeRepository @Inject constructor(
     }
 }
 
-@Module
-@InstallIn(SingletonComponent::class)
-object RepositoryModule {
-
-    @Provides
-    @Singleton
-    fun provideAnimeRepository(
-        api: AniListApi,
-        @ApplicationContext context: Context
-    ): AnimeRepository {
-        return AnimeRepository(api, context)
-    }
-}
-
-class RemoteControlPreferences @Inject constructor(
+class RemoteControlPreferences(
     private val dataStore: DataStore<Preferences>
 ) {
     companion object {

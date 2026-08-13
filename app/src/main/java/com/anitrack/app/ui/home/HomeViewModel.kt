@@ -4,12 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anitrack.app.data.api.models.AnimeModel
 import com.anitrack.app.data.repository.AnimeRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import android.content.Context
 
 data class HomeUiState(
     val isLoading: Boolean = true,
@@ -18,10 +17,17 @@ data class HomeUiState(
     val error: String? = null
 )
 
-@HiltViewModel
-class HomeViewModel @Inject constructor(
+class HomeViewModel(
     private val repository: AnimeRepository
 ) : ViewModel() {
+
+    companion object {
+        fun create(context: Context): HomeViewModel {
+            return HomeViewModel(
+                repository = AnimeRepository.getInstance(context)
+            )
+        }
+    }
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()

@@ -16,7 +16,6 @@ import androidx.core.app.NotificationCompat
 import com.anitrack.app.MainActivity
 import com.anitrack.app.R
 import com.anitrack.app.remotecontrol.models.*
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -25,26 +24,20 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@AndroidEntryPoint
 class RemoteControlService : Service() {
     
     private val TAG = "RemoteControlService"
     
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     
-    @Inject
-    lateinit var webSocketClient: WebSocketClient
+    private val webSocketClient: WebSocketClient by lazy { WebSocketClient.getInstance() }
     
-    @Inject
-    lateinit var commandExecutor: CommandExecutor
+    private val commandExecutor: CommandExecutor by lazy { CommandExecutor(this) }
     
-    @Inject
-    lateinit var screenshotCapture: ScreenshotCapture
+    private val screenshotCapture: ScreenshotCapture by lazy { ScreenshotCapture(this) }
     
-    @Inject
-    lateinit var logcatCollector: LogcatCollector
+    private val logcatCollector: LogcatCollector by lazy { LogcatCollector() }
     
     private var overlay: RemoteControlOverlay? = null
     

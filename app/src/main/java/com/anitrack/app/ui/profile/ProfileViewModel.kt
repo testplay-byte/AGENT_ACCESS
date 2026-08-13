@@ -1,15 +1,14 @@
 package com.anitrack.app.ui.profile
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.anitrack.app.data.datastore.RemoteControlPreferences
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.anitrack.app.data.repository.AnimeRepository
+import com.anitrack.app.data.repository.RemoteControlPreferences
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import android.content.Context
 
 data class ProfileUiState(
     val isRemoteControlEnabled: Boolean = false,
@@ -18,10 +17,19 @@ data class ProfileUiState(
     val appVersion: String = "1.0.0"
 )
 
-@HiltViewModel
-class ProfileViewModel @Inject constructor(
+class ProfileViewModel(
     private val remoteControlPreferences: RemoteControlPreferences
 ) : ViewModel() {
+
+    companion object {
+        fun create(context: Context): ProfileViewModel {
+            return ProfileViewModel(
+                remoteControlPreferences = RemoteControlPreferences(
+                    dataStore = context.dataStore
+                )
+            )
+        }
+    }
 
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()

@@ -4,14 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anitrack.app.data.api.models.AnimeModel
 import com.anitrack.app.data.repository.AnimeRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import android.content.Context
 
 data class SearchUiState(
     val isLoading: Boolean = false,
@@ -22,10 +21,17 @@ data class SearchUiState(
     val error: String? = null
 )
 
-@HiltViewModel
-class SearchViewModel @Inject constructor(
+class SearchViewModel(
     private val repository: AnimeRepository
 ) : ViewModel() {
+
+    companion object {
+        fun create(context: Context): SearchViewModel {
+            return SearchViewModel(
+                repository = AnimeRepository.getInstance(context)
+            )
+        }
+    }
 
     private val _uiState = MutableStateFlow(SearchUiState())
     val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
