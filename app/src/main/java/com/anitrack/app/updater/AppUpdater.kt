@@ -28,8 +28,8 @@ import kotlin.coroutines.resumeWithException
  * Update GITHUB_REPO to match your actual GitHub repository.
  */
 object UpdaterConfig {
-    // TODO: Replace with your actual GitHub repository (owner/repo)
-    const val GITHUB_REPO = "username/anitrack"
+    // AniTrack GitHub Repository
+    const val GITHUB_REPO = "testplay-byte/AGENT_ACCESS"
     
     // GitHub API endpoints
     const val GITHUB_API_BASE = "https://api.github.com"
